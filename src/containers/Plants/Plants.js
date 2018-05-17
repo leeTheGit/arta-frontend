@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
+import {Route} from 'react-router-dom';
 import axios from 'axios';
 import Plant from '../../components/Plant/Plant';
 import Plantform from '../../components/Plantform/Plantform';
-
+import Plantcontrols from '../../components/Plant/Controls/Controls';
 class Plants extends Component {
 
     state = {
@@ -13,14 +14,10 @@ class Plants extends Component {
         axios.get('/plant')
             .then( response => {
                 var data = response.data.data;
+                this.setState({plants: data});
+            }).catch( response => {
             console.log(response);
-            const postArray = data;
-            this.setState({plants: postArray});
-        }).catch( response => {
-            console.log(response);
-
-
-        })
+            });
     }
 
 
@@ -33,17 +30,18 @@ class Plants extends Component {
                         serial  = {plant.serial}
                         lifecycle = {plant.lifecycle}
                         created = {plant.created_at}
-
                 />
             );
         });
 
+
+
         return (
             <div className="plant">
                 <h1>Hi I'm a plant!</h1>
+                <Plantcontrols />
                 {plants}
-                <Plantform submitHandler={this.submitHandler}/>
-                {/* <Plants />  */}
+                <Route path="/plants/new" component={Plantform} />
             </div>
         )
     }
