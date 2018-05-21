@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import qs from 'qs';
 import User from '../../components/User/User';
 import Usercontrols from '../../components/User/Usercontrols/Usercontrols';
 import NewUserForm from '../../components/User/Newuserform/Newuserform';
@@ -31,6 +32,10 @@ class Users extends Component {
         this.setState({newUser:false})
     }
 
+    setGroups = (groups) => {
+        this.setState({groups: groups});
+    }
+
     updateForm = (value) => {
         const key = Object.keys(value)[0];
         console.log(key);
@@ -46,13 +51,28 @@ class Users extends Component {
     addUserHandler = (e) => {
         e.preventDefault();
         console.log('adding user now');
-        axios.post('/user', this.state.newUserData)
+        console.log(this.state.newUserData);
+
+        const newUser = {...this.state.newUserData};
+        axios.post('/user', qs.stringify(newUser))
             .then( response => {
-                var data = response;
-                // this.setState({users:data});
+                var id = response.data.data.id;
+                newUser['id'] = id;
+                const users = [...this.state.users];
+                users.push(newUser);
+                this.setState({ 
+                    users:users,
+                    newUser: false, 
+                    newUserData: {} 
+                });
             }).catch( response => {
                 console.log(response);
             });
+    }
+                
+    deleteUserHandler = (e) => {
+        e.preventDefault();
+        console.log('deleting user');
     }
 
     newUserHandler = () => {
@@ -68,15 +88,17 @@ class Users extends Component {
                             removeForm={this.removeFormHandler}
                             updateForm={this.updateForm}
                             addUser={this.addUserHandler} 
+                            setGroups={this.setGroups}
                             />
         }
         const users = this.state.users.map(user => {
             return (
-                <User   key     = {user.id} 
-                        userid = {user.id}
-                        firstname = {user.firstname}
-                        lastname = {user.lastname}
-                        username = {user.username}
+                <User   key         = {user.id} 
+                        userid      = {user.id}
+                        firstname   = {user.firstname}
+                        lastname    = {user.lastname}
+                        username    = {user.username}
+                        delete      = {this.deleteUserHandler}
                 />
             );
         });

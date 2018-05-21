@@ -5,16 +5,22 @@ import axios from 'axios';
 
 class NewUserForm extends Component {
 
-    state = {
-        groups: []
-    };
-
+    groups = [];
+        
     componentDidMount() {
         axios.get('/group')
             .then( response => {
                 var data = response.data.data;
-                console.log(data);
-                this.setState({groups:data});
+
+                this.groups = data;
+                this.props.setGroups(data);
+
+                for (let i=0; i<data.length;i++) {
+                    if (data[i].groupname === 'Arta') {
+
+                        this.props.updateForm({groupid: data[i].groupid});
+                    }
+                }
             }).catch( response => {
                 console.log(response);
             });
@@ -23,9 +29,9 @@ class NewUserForm extends Component {
     render() {
 
 
-        const groups = this.state.groups.map((group) => {
-            return <option key={group.groupid} selected value={group.groupid}> {group.groupname}</option>
-        })
+        const groupElements = this.groups.map((group) => {
+            return <option key={group.groupid} defaultValue value={group.groupid}> {group.groupname}</option>
+        });
 
         return (
             <div className={classes.Newuserform}>
@@ -44,7 +50,7 @@ class NewUserForm extends Component {
                     <label id="password">Password</label>
                     <input type="text" name="password" val=""  onChange={(e) => {this.props.updateForm({password: e.target.value})}} />
                     <select name="cars">
-                        {groups}
+                        {groupElements}
                     </select>
                     <button onClick={this.props.addUser}>Submit</button>
                 </form>
