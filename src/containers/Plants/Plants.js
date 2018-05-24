@@ -1,9 +1,12 @@
-import React, {Component} from 'react';
-import {Route} from 'react-router-dom';
-import axios from 'axios';
-import Plant from '../../components/Plant/Plant';
-import Plantform from '../../components/Plantform/Plantform';
-import Plantcontrols from '../../components/Plant/Controls/Controls';
+import React, {Component}   from 'react';
+import {Route}              from 'react-router-dom';
+import axios                from 'axios';
+import Plant                from '../../components/Plant/Plant';
+import Plantform            from '../../components/Plantform/Plantform';
+import Plantcontrols        from '../../components/Plant/Controls/Controls';
+
+
+
 class Plants extends Component {
 
     state = {

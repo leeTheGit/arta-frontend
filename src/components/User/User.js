@@ -5,7 +5,7 @@ import Button from '../UI/Button/Button';
 const user = (props) => {
     return (
         <div className={classes.User}>
-            <Button clicked={props.delete}>X</Button>
+            <Button clicked={(e) => props.delete(props.userid, props.firstname)} >X</Button>
             <p>{props.firstname} {props.lastname}</p>
             <p>{props.username}</p>
         </div>

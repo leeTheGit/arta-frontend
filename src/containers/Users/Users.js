@@ -1,9 +1,12 @@
-import React, {Component} from 'react';
-import axios from 'axios';
-import qs from 'qs';
-import User from '../../components/User/User';
-import Usercontrols from '../../components/User/Usercontrols/Usercontrols';
-import NewUserForm from '../../components/User/Newuserform/Newuserform';
+import React, {Component}   from 'react';
+import axios                from 'axios';
+import qs                   from 'qs';
+import User                 from '../../components/User/User';
+import Usercontrols         from '../../components/User/Usercontrols/Usercontrols';
+import NewUserForm          from '../../components/User/Newuserform/Newuserform';
+import Modal                from '../../components/UI/Modal/Modal';
+import DeleteModal          from '../../components/User/Deletemodal/Deletemodal';
+
 
 class Users extends Component {
 
@@ -12,23 +15,25 @@ class Users extends Component {
         users: [],
         groups: [],
         newUserData: {},
-        newUser: false
+        newUser: false,
+        deleteModal: false,
+        deleteId: null,
+        deleteName: null,
+        search: ''
     }
 
     componentDidMount () {
         axios.get('/user')
             .then( response => {
                 var data = response.data.data;
-            console.log(data);
-            this.setState({users:data});
+                this.setState({users:data});
         }).catch( response => {
-            console.log(response);
+
         });
 
     }
 
     removeFormHandler = () => {
-        console.log('removing form!!');
         this.setState({newUser:false})
     }
 
@@ -36,22 +41,28 @@ class Users extends Component {
         this.setState({groups: groups});
     }
 
+    onSearchChange = (value) => {
+        this.setState({search: value})
+    }
+
+    clearSearch = (e) => {
+        e.preventDefault();
+        this.setState({search: ''});
+    }
+
     updateForm = (value) => {
-        const key = Object.keys(value)[0];
-        console.log(key);
+
         const user = {
             ...this.state.newUserData,
             ...value
         };
         this.setState({newUserData: user}, () => {
-            console.log(this.state);
+            // console.log(this.state);
         });
     }
 
     addUserHandler = (e) => {
         e.preventDefault();
-        console.log('adding user now');
-        console.log(this.state.newUserData);
 
         const newUser = {...this.state.newUserData};
         axios.post('/user', qs.stringify(newUser))
@@ -70,14 +81,47 @@ class Users extends Component {
             });
     }
                 
-    deleteUserHandler = (e) => {
-        e.preventDefault();
-        console.log('deleting user');
+    deleteUserHandler = () => {
+
+        axios.delete('/user/' + this.state.deleteId)
+        .then( response => {
+            
+            const users = this.state.users.filter( user => {
+                return user.id !== this.state.deleteId;
+            });
+            
+            this.setState({users:users});
+            
+            this.removeModal();
+
+        }).catch( response => {
+            console.log(response);
+        });
+
     }
 
     newUserHandler = () => {
         this.setState({newUser: true});
     }
+
+    showModal = (userid, username) => {
+        this.setState({
+            deleteModal: true, 
+            deleteId: userid, 
+            deleteName: username
+        });
+    }
+
+    removeModal = () => {
+        this.setState({
+            deleteModal:false, 
+            deleteId: null, 
+            deleteName: null 
+        });
+    }
+
+
+
 
     render() {
 
@@ -91,14 +135,33 @@ class Users extends Component {
                             setGroups={this.setGroups}
                             />
         }
-        const users = this.state.users.map(user => {
+
+        let deleteModal = null;
+        if (this.state.deleteModal) {
+            deleteModal = <Modal  show={this.state.deleteModal} 
+                                remove={this.removeModal}>
+                            <DeleteModal 
+                                deleteUser={this.deleteUserHandler} 
+                                removeModal={this.removeModal}
+                                username={this.state.deleteName}
+                                />
+                        </Modal>
+        }
+
+
+        const users = this.state.users.filter((user) => {
+            return  this.state.search === '' || 
+                    user.firstname.indexOf(this.state.search) !== -1 ||
+                    user.lastname.indexOf(this.state.search) !== -1 ||
+                    user.username.indexOf(this.state.search) !== -1;
+        }).map(user => { 
             return (
                 <User   key         = {user.id} 
                         userid      = {user.id}
                         firstname   = {user.firstname}
                         lastname    = {user.lastname}
                         username    = {user.username}
-                        delete      = {this.deleteUserHandler}
+                        delete      = {this.showModal}
                 />
             );
         });
@@ -108,9 +171,14 @@ class Users extends Component {
 
         return (
             <div className="Users">
-                <h3>This site has HEAPS of users!</h3>
-                <Usercontrols newUser={this.newUserHandler}/>
+                <Usercontrols 
+                    newUser={this.newUserHandler}
+                    updateSearch={this.onSearchChange}
+                    clearSearch={this.clearSearch}
+                    search={this.state.search}
+                    />
                 {newUserForm}
+                {deleteModal}
                 {users}
             </div>
         );

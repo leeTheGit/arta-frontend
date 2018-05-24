@@ -1,31 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {BrowserRouter} from 'react-router-dom';
+import App                      from './App';
+import Store                    from './store/store';
+import React                    from 'react';
+import ReactDOM                 from 'react-dom';
+import { Provider }             from 'react-redux';
+import { BrowserRouter }        from 'react-router-dom';
+import registerServiceWorker    from './registerServiceWorker';
 import './index.css';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
-import axios from 'axios';
 
-axios.defaults.baseURL = 'http://arta-api.io';
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-
-axios.interceptors.request.use(function (config) {
-    config['withCredentials'] =true;
-    config['auth'] = {
-        username: 'bugs',
-        password: 'artadb'
-    };
-
-    return config;
-  }, function (error) {
-    return Promise.reject(error);
-  });
 
 const app = (
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>
+    <Provider store={Store}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </Provider>
 );
+
 
 ReactDOM.render(app, document.getElementById('root'));
 registerServiceWorker();

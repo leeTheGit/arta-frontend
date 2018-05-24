@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import classes from './Newuserform.css';
-import Button from '../../UI/Button/Button';
-import axios from 'axios';
+import React, {Component}   from 'react';
+import classes              from './Newuserform.css';
+import Button               from '../../UI/Button/Button';
+import axios                from 'axios';
 
 class NewUserForm extends Component {
 
