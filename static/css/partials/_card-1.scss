@@ -1,0 +1,287 @@
+@mixin card-home-feature-base() {
+
+    a.card {
+        @include card-image-full;
+        position:relative;
+
+        height:100%;
+        color:$white;
+
+        > article {
+            > figure {
+                @include gradientafter;
+            }
+            > .content{
+                width:100%;
+
+                > .category{
+                    color:white;
+                    // &:before {
+                    //     content: '';
+                    //     display: block;
+                    //     height: 20px;
+                    //     width: 80px;
+                    //     background: url(../images/white-arrow.svg);
+                    //     background-repeat: no-repeat;
+                    //     margin-bottom: 5px;
+                    // }
+                }
+                > h2{
+                    font-weight:600;
+                    margin-top: 0;
+                    overflow:hidden;
+                    margin-bottom:6px;
+                    height: 85px;
+                    line-height: 1.18;
+
+                }
+                > p.excerpt {
+                    display:none;
+                }
+
+                .author{
+                    p{
+                        font-family:$font-family-serif;
+                        color:white;
+                        border-right: 1px solid color(white);
+                    }
+                    >time {
+                        color:white;
+                    }
+                }
+                
+                > time{
+                }
+            }
+        }
+        &.without__image {
+        
+            background:color(offwhite);
+
+            article {
+                > .content {
+                    color:red;
+
+                    .category{
+                        color:color(darkgrey);
+                        // &:before {
+                        //     background: url(../images/black-arrow.svg);
+                        //     background-repeat:no-repeat;
+                        // }
+                    }
+                    .author {
+                        >p {
+                            color:color(darkgray);
+                            border-right:1px solid color(darkgray);
+                        }
+                        time {
+                            color:color(darkgray);
+                        }
+
+                    }
+
+                }
+            }
+        }   
+        &.social {
+            .content {
+                padding-top:31px;
+                .icon {
+                    margin-bottom:200px;
+                    display: block!important;
+                }
+
+                > p {
+                    font-size: rem(34);
+                    font-weight:600;
+                    margin-top: 0;
+                    margin-bottom:6px;
+                    overflow:hidden;
+                    height: 80px;
+                    line-height: 1.18;
+
+                }
+            }
+            &.twitter{
+                .content{
+                    >p {
+                        height:130px;
+                        font-size:rem(22);
+                        line-height:1.27;
+                    }
+
+                }
+                &.without__image {
+                    .content {
+                        > p {
+                            color:black;
+                        }
+                    }
+                }
+            }
+
+            &.instagram{
+                .content{
+                    >p {
+                        min-height:20px;
+                        height:130px;
+                        font-size:rem(22);
+                        line-height:1.27;
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+
+.home-feature {
+    @media screen and (min-width: $mmd-break){
+        @include card-home-feature-base();
+
+        height:400px;
+        a.card {
+            article {
+                > .content {
+                    padding: 260px 20px 10px 30px;
+
+                    h2{
+                        font-size: rem(34);
+                        width:450px;                        
+                    }
+                }
+            }
+            &.social{
+                &.twitter {
+                    svg {
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+.home-feature-tablet {
+    @media screen and (min-width: $sm-break) and (max-width: $mmd-break-down) {
+        @include card-home-feature-base();
+
+        height:400px;
+        a.card {
+            padding: 36px;
+            article {
+            
+                > .content {
+                    width:100%;
+                    height: 100%;
+
+                    .category{
+                        font-size:rem(10);
+                        position: absolute;
+                        bottom: 110px;
+                    }
+
+                    h2{
+                        font-size: rem(31);
+                        position: absolute;
+                        bottom: 15px;
+                        width:350px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+.home-feature-mobile {
+    @media screen and (max-width: $sm-break-down){
+        @include card-home-feature-base();
+
+        height:55vw;
+        &.blog-feature{
+            margin-bottom:20px;
+        }
+        &.index-feature{
+            // margin-top:20px;
+        }
+        a.card {
+            padding: 16px;
+            article {
+        
+                >figure {
+                    height:55vw;
+                }
+                > .content {
+                    width: 100%;
+                    height: 100%;
+
+                    .category{
+                        position: absolute;
+                        bottom: 85px;
+                    }
+
+                    h2{
+                        font-size: rem(20);
+                        height: 60px;
+                        line-height: 1.15;
+                        position: absolute;
+                        bottom: 15px;
+                    }
+                }
+            }
+
+            &.social {
+                .content {
+                    padding-top:5px;
+                    .icon {
+                        margin-bottom:45px;
+                    }
+
+                    > p {
+                        font-size: rem(26);
+                        margin-top: 5px;
+                        min-height:20px;
+                        height: 60px;
+                        line-height: 1.15;
+                    }
+                }
+
+                &.twitter, &.instagram{
+                    .content{
+                        >p {
+                            height:45px;
+                            font-size:rem(18);
+                            line-height:1.22;
+                            margin-bottom:10px;
+                        }
+
+                    }
+                }
+
+                &.instagram{
+                    &.without__content {
+                        .content {
+                            .icon {
+                                margin-bottom: 90px;
+                            }
+                            >p {
+                                margin:0;
+                            }
+                        }
+                    }
+                }
+                &.youtube{
+                    .content{
+                        .icon {
+                            margin-bottom:90px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
