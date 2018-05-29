@@ -5,8 +5,7 @@ import ReactDOM                 from 'react-dom';
 import { Provider }             from 'react-redux';
 import { BrowserRouter }        from 'react-router-dom';
 import registerServiceWorker    from './registerServiceWorker';
-import './index.css';
-
+import "./assets/styles/concat.min.css";
 
 const app = (
     <Provider store={Store}>

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Route, Switch }    from 'react-router-dom';
+import * as actionTypes     from './store/actions';
 import Layout               from './components/Layout/Layout';
 import Logout               from './containers/Login/Logout/Logout';
 import Plants               from './containers/Plants/Plants';
 import Login                from './containers/Login/Login';
 import Users                from './containers/Users/Users';
-import axios                from 'axios';
 import store                from './store/store';
+import axios                from 'axios';
 import Home                 from './containers/Home/Home';
-import * as actionTypes     from './store/actions';
 
 store.subscribe(axiosListener);
 
@@ -17,8 +17,23 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 const username = localStorage.getItem('username');
 const password = localStorage.getItem('password');
 
+axios.interceptors.response.use(function (response) {
+    if (response.status === 500) {
+        return Promise.reject(response);
+    }
+    return response;
+}, function (error) {
+
+    return Promise.reject(error);
+});
+
+window.axios = axios;
+
 if (username && password) {
-    axios.interceptors.request.use( config => {
+
+    store.dispatch({type: actionTypes.LOGIN, login: {username, password}});
+    
+    window.axios.myInterceptor = axios.interceptors.request.use( config => {
         config['withCredentials'] = true;
         config['auth'] = { username, password };
         return config;
@@ -30,15 +45,22 @@ if (username && password) {
 
 function axiosListener() {
     const state = store.getState();
-    const username = state.username;
-    const password = state.password;
-    axios.interceptors.request.use( config => {
-        config['withCredentials'] = true;
-        config['auth'] = { username, password };
-        return config;
-    }, function (error) {
-        return Promise.reject(error);
-    });
+    if (!state.username && !state.password) {
+        window.axios.interceptors.request.eject(axios.myInterceptor);
+    }
+    else {
+        const username = state.username;
+        const password = state.password;
+
+        window.axios.myInterceptor = window.axios.interceptors.request.use( config => {
+            const newState = store.getState();
+            config['withCredentials'] = true;
+            config['auth'] = { username: newState.username, password: newState.password };
+            return config;
+        }, function (error) {
+            return Promise.reject(error);
+        });
+    }
 }
 
 

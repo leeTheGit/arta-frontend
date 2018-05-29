@@ -25,10 +25,13 @@ class Users extends Component {
     componentDidMount () {
         axios.get('/user')
             .then( response => {
-                var data = response.data.data;
-                this.setState({users:data});
+                console.log(response);
+                if (response.data) {
+                    var data = response.data.data;
+                    this.setState({users:data});
+                }
         }).catch( response => {
-
+            console.log(response);
         });
 
     }
@@ -52,13 +55,11 @@ class Users extends Component {
 
     updateForm = (value) => {
 
-        const user = {
+        const newUserData = {
             ...this.state.newUserData,
             ...value
         };
-        this.setState({newUserData: user}, () => {
-            // console.log(this.state);
-        });
+        this.setState({newUserData});
     }
 
     addUserHandler = (e) => {
@@ -128,12 +129,14 @@ class Users extends Component {
         let newUserForm = null;
         
         if (this.state.newUser) {
-            newUserForm = <NewUserForm 
-                            removeForm={this.removeFormHandler}
-                            updateForm={this.updateForm}
-                            addUser={this.addUserHandler} 
-                            setGroups={this.setGroups}
+            newUserForm = <Modal show="true">
+                            <NewUserForm 
+                                removeForm={this.removeFormHandler}
+                                updateForm={this.updateForm}
+                             addUser={this.addUserHandler} 
+                              setGroups={this.setGroups}
                             />
+                        </Modal>
         }
 
         let deleteModal = null;
@@ -162,6 +165,8 @@ class Users extends Component {
                         lastname    = {user.lastname}
                         username    = {user.username}
                         delete      = {this.showModal}
+                        email       = {user.email}
+                        group       = {user.groupname}
                 />
             );
         });

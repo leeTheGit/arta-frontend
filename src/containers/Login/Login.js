@@ -1,11 +1,10 @@
 import React, {Component}   from 'react';
+import * as actionTypes     from '../../store/actions';
+import { Redirect }         from 'react-router-dom';
+import { connect }          from 'react-redux';
 import classes              from './Login.css';
 import Button               from '../../components/UI/Button/Button';
-import { connect }          from 'react-redux';
-import * as actionTypes     from '../../store/actions';
 
-
-// Have set up Redux but dispatch function not preventing default
 
 class Login extends Component {
 
@@ -15,15 +14,15 @@ class Login extends Component {
         isLoggedIn: false
     }
 
-    // loginHandler = (e) => {
-    //     e.preventDefault();
-    //     // this.
-    //     console.log(this.props);
-    //     this.props.history.push('/');
-    // }
-
+    componentDidMount() {
+        console.log(this.props);
+    }
 
     render() {
+        if (this.props.isLoggedIn) {
+            return <Redirect to="/plants" />;
+        }
+
         return (
             <div className={classes.Login}>
                 <h2>A login form!</h2>
@@ -50,8 +49,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         loginHandler: (e, user, pass) => {
+
             e.preventDefault();
-            console.log('dispatching', user, pass);
             localStorage.setItem('username', user);
             localStorage.setItem('password', pass);
             dispatch({type: actionTypes.LOGIN, login: {username:user, password:pass}});

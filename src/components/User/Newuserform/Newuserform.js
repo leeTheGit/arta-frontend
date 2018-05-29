@@ -38,20 +38,34 @@ class NewUserForm extends Component {
                 <Button clicked={this.props.removeForm}>X</Button>
                 <h2>New user</h2>
                 <form>
-                    <label>Username</label>
-                    <input type="text"  onChange={(e) => {this.props.updateForm({username: e.target.value})}} />
-    
-                    <label id="firstname">First Name</label>
-                    <input type="text" name="firstname" val="" onChange={(e) => {this.props.updateForm({firstname: e.target.value})}} />
                     
-                    <label id="lastname">Last Name</label>
-                    <input type="text" name="lastname" val=""  onChange={(e) => {this.props.updateForm({lastname: e.target.value})}} />
+                    <div className={classes.user__inputgroup}>
+                        <label>Username</label>
+                        <input type="text"  onChange={(e) => {this.props.updateForm({username: e.target.value})}} />
+                    </div>
+
+                    <div className={classes.user__inputgroup}>
+                        <label id="firstname">First Name</label>
+                        <input type="text" name="firstname" val="" onChange={(e) => {this.props.updateForm({firstname: e.target.value})}} />
+                    </div>
+
+                    <div className={classes.user__inputgroup}>
+                        <label id="lastname">Last Name</label>
+                        <input type="text" name="lastname" val=""  onChange={(e) => {this.props.updateForm({lastname: e.target.value})}} />
+                    </div>
+
+                    <div className={classes.user__inputgroup}>
+                        <label id="password">Password</label>
+                        <input type="text" name="password" val=""  onChange={(e) => {this.props.updateForm({password: e.target.value})}} />
+                    </div>
+
+                    <div className={classes.user__inputgroup}>
+                        <select name="cars">
+                            {groupElements}
+                        </select>
+                    </div>
     
-                    <label id="password">Password</label>
-                    <input type="text" name="password" val=""  onChange={(e) => {this.props.updateForm({password: e.target.value})}} />
-                    <select name="cars">
-                        {groupElements}
-                    </select>
+    
                     <button onClick={this.props.addUser}>Submit</button>
                 </form>
             </div>

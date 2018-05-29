@@ -1,9 +1,9 @@
 import React, {Component}   from 'react';
-import {Route}              from 'react-router-dom';
-import axios                from 'axios';
-import Plant                from '../../components/Plant/Plant';
-import Plantform            from '../../components/Plantform/Plantform';
 import Plantcontrols        from '../../components/Plant/Controls/Controls';
+import Plantform            from '../../components/Plantform/Plantform';
+import {Route}              from 'react-router-dom';
+import Plant                from '../../components/Plant/Plant';
+import axios                from 'axios';
 
 
 
@@ -17,9 +17,11 @@ class Plants extends Component {
         axios.get('/plant')
             .then( response => {
                 var data = response.data.data;
-                this.setState({plants: data});
+                if (data) {
+                    this.setState({plants: data});
+                }
             }).catch( response => {
-            console.log(response);
+                // console.log(response);
             });
     }
 

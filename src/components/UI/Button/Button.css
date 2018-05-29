@@ -5,9 +5,9 @@
     outline: none;
     cursor: pointer;
     font: inherit;
-    padding: 10px;
-    margin: 10px;
-    font-weight: bold;
+    /* padding: 10px; */
+    /* margin: 10px; */
+    /* font-weight: bold; */
 }
 
 .Button:first-of-type {
@@ -21,4 +21,11 @@
 
 .Danger {
     color: #944317;
+}
+
+.user__delete {
+    position:absolute;
+    top:5px;
+    right:10px;
+
 }

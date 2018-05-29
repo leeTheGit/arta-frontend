@@ -1,9 +1,9 @@
-import React, {Component}   from 'react';
-import Aux                  from '../../hoc/Aux';
-import classes              from './Layout.css';
-import Toolbar              from '../Navigation/Toolbar/Toolbar';
+import React, { Component } from 'react';
 import SideDrawer           from '../Navigation/SideDrawer/SideDrawer';
-import {connect}            from 'react-redux';
+import { connect }          from 'react-redux';
+import Toolbar              from '../Navigation/Toolbar/Toolbar';
+import classes              from './Layout.css';
+import Aux                  from '../../hoc/Aux';
 
 
 class Layout extends Component {
@@ -13,10 +13,6 @@ class Layout extends Component {
         isLoggedIn: false
     };
 
-
-    // loginHandler = () => {
-    //     this.setState({isLoggedIn: true});
-    // }
 
     closeDrawerHandler = () => {
         this.setState({drawerOpen: false});
