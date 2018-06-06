@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { Route, Switch }    from 'react-router-dom';
 import * as actionTypes     from './store/actions';
+import Locations            from './containers/Locations';
 import Layout               from './components/Layout/Layout';
 import Logout               from './containers/Login/Logout/Logout';
 import Plants               from './containers/Plants/Plants';
 import Login                from './containers/Login/Login';
 import Users                from './containers/Users/Users';
 import store                from './store/store';
+import Rooms                from './containers/Room';
+import Plant                from './containers/Plants/Plant';
 import axios                from 'axios';
 import Home                 from './containers/Home/Home';
 
@@ -71,11 +74,14 @@ class App extends Component {
             <div>
                 <Layout>
                     <Switch>
-                        <Route path="/" exact component={Home} />
-                        <Route path="/users"  component={Users} />
-                        <Route path="/plants" component={Plants} />
-                        <Route path="/login"  component={Login} />
-                        <Route path="/Logout" component={Logout} />
+                        <Route path="/" exact       component={Home} />
+                        <Route path="/users"        component={Users} />
+                        <Route path="/plants"       component={Plants} />
+                        <Route path="/plant/:id"    component={Plant} />
+                        <Route path="/Rooms"        component={Rooms} />
+                        <Route path="/Locations"    component={Locations} />
+                        <Route path="/login"        component={Login} />
+                        <Route path="/Logout"       component={Logout} />
                     </Switch>
                 </Layout>
             </div>

@@ -1,0 +1,15 @@
+.new-user-form {
+    margin:auto;
+    background-color:red;
+    padding:30px;
+    /* width: 80%; */
+}
+.new-user-form__remove {
+    background: url('/static/icons/x-mark-thin.svg');
+    background-repeat:no-repeat;
+    height:20px;
+    width:20px;
+    background-size:contain;
+    position: absolute;
+    right: 20px;
+}

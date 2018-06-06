@@ -1,13 +1,13 @@
 import React from 'react';
-import classes from './Toolbar.css';
+
 import NavigationItems from '../NavigationItems/NavigationItems';
 import DrawerToggle from '../SideDrawer/DrawerToggle/DrawerToggle';
 
 
 const toolbar = (props) => (
-    <header className={classes.Toolbar}>
+    <header className="Toolbar">
         <DrawerToggle click={props.click}/>
-        <nav className={classes.DesktopOnly}>
+        <nav className="Toolbar-desktopOnly">
             <NavigationItems isLoggedIn={props.isLoggedIn} />
         </nav>
         

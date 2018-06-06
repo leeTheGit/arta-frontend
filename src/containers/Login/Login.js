@@ -2,7 +2,6 @@ import React, {Component}   from 'react';
 import * as actionTypes     from '../../store/actions';
 import { Redirect }         from 'react-router-dom';
 import { connect }          from 'react-redux';
-import classes              from './Login.css';
 import Button               from '../../components/UI/Button/Button';
 
 
@@ -24,14 +23,19 @@ class Login extends Component {
         }
 
         return (
-            <div className={classes.Login}>
-                <h2>A login form!</h2>
-                <form>
-                    <label>Username</label>
-                    <input type="text" name="username" value={this.state.username} onChange={(e) => {this.setState({username: e.target.value})}}/>
-                    <label>Paswword</label>
-                    <input type="text" name="password" value={this.state.password} onChange={(e) => {this.setState({password: e.target.value})}}/>
-                    <Button clicked={ e => {this.props.loginHandler(e, this.state.username, this.state.password)}}>Login</Button>
+            <div className="login bb">
+
+                <form className="login-form">
+                    <div>
+                        {/* <label>Username</label> */}
+                        <input className="login-form__input" type="text" name="username" placeholder="Username" value={this.state.username} onChange={(e) => {this.setState({username: e.target.value})}}/>
+                    </div>
+                    <div>
+                        {/* <label>Paswword</label> */}
+                        <input className="login-form__input" type="text" name="password"  placeholder="Password" value={this.state.password} onChange={(e) => {this.setState({password: e.target.value})}}/>
+                   </div>
+                   
+                   <Button clicked={ e => {this.props.loginHandler(e, this.state.username, this.state.password)}}>Login</Button>
                 </form>
             </div>
         );

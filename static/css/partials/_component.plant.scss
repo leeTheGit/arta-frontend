@@ -1,0 +1,24 @@
+.plant {
+    width:80%;
+    margin:auto;
+    margin-bottom:20px;
+}
+
+.plant__img {
+    display:block;
+    float:left;
+    margin-right:20px;
+    height:50px;
+    width:50px;
+    background: url('/static/images/logo.svg');
+    background-repeat:no-repeat;
+    background-size:contain;
+    border-radius:50%;
+    transition: 1s ease-in-out;
+
+    &:hover {
+        background-color:purple;
+        transform:rotate(360deg);
+    }
+}
+

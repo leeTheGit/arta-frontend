@@ -1,14 +1,14 @@
 import React from 'react';
-import classes from './SideDrawer.css';
+
 import NavigationItems from '../NavigationItems/NavigationItems';
 import Aux from '../../../hoc/Aux';
 import Backdrop from '../../UI/Backdrop/Backdrop'
 
 const sideDrawer = (props) => {
 
-    let drawerClasses = [classes.SideDrawer, classes.close];
+    let drawerClasses = ["SideDrawer", "close"];
     if (props.show) {
-        drawerClasses = [classes.SideDrawer, classes.open];
+        drawerClasses = ["SideDrawer", "open"];
     }
 
     return (

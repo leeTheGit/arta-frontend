@@ -26,12 +26,21 @@ class Plants extends Component {
     }
 
 
+
+    plantClickHandler = (id) => {
+        console.log('clicked on this plant', id);
+        console.log(this.props.history);
+        this.props.history.push('plant/' + id);
+    }
+
+
     render() {
 
         const plants = this.state.plants.map(plant => {
             return (
                 <Plant  key     = {plant.id} 
                         plantid = {plant.id}
+                        clicked = {this.plantClickHandler}
                         serial  = {plant.serial}
                         lifecycle = {plant.lifecycle}
                         created = {plant.created_at}
@@ -42,8 +51,7 @@ class Plants extends Component {
 
 
         return (
-            <div className="plant">
-                <h1>Hi I'm a plant!</h1>
+            <div className="">
                 <Plantcontrols />
                 {plants}
                 <Route path="/plants/new" component={Plantform} />

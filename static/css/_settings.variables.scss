@@ -11,64 +11,54 @@ $baseFontSize:				16px; /* ($baseFontSize * 1) + 0px; */
 
 
 // //colors
-$brand-primary:             #2D9DE2; 
-$brand-secondary:           #e22f22;
+// $brand-primary:             #2D9DE2; 
+// $brand-secondary:           #e22f22;
 
-$dark-color:       			#212427;
-$white:						#ffffff;
-$black:             		#000000;
-$blue:              		#46a5fc;
+// $dark-color:       			#212427;
+// $white:						#ffffff;
+// $black:             		#000000;
+// $blue:              		#46a5fc;
 
-$transparent:				rgba(0,0,0,0);
-$gray-2-color:     			#efefef;
-$gray-3-color:     			#dfe0e1;
-$gray-4-color:     			#bfc3c3;
-$grey:						#808080;
-$border-color:     			#e0e0e0;
-$base-color:       			#4B4B4B;
-$header-color:     			#4B4B4B;
-$error-color:      			#e73d4a;
-$success-color:    			#17aa1c;
-$warning:           		#fecd50;
-$selected-color:   			#212427;
-$hover-color:      			#303030;
-$visited-color:    			#121212;
-$link-color:       			#212427;
-$link-hover-color: 			#303030;
+// $transparent:				rgba(0,0,0,0);
+// $gray-2-color:     			#efefef;
+// $gray-3-color:     			#dfe0e1;
+// $gray-4-color:     			#bfc3c3;
+// $grey:						#808080;
+// $border-color:     			#e0e0e0;
+// $base-color:       			#4B4B4B;
+// $header-color:     			#4B4B4B;
+// $error-color:      			#e73d4a;
+// $success-color:    			#17aa1c;
+// $warning:           		#fecd50;
+// $selected-color:   			#212427;
+// $hover-color:      			#303030;
+// $visited-color:    			#121212;
+// $link-color:       			#212427;
+// $link-hover-color: 			#303030;
 
 
 
 //Buttons
-$btn-primary-color:              #fff !default;
-$btn-primary-bg:                 $brand-primary !default;
-$btn-primary-border:             darken($btn-primary-bg, 5%) !default;
+// $btn-primary-color:              #fff !default;
+// $btn-primary-bg:                 $brand-primary !default;
+// $btn-primary-border:             darken($btn-primary-bg, 5%) !default;
 
-
+  /* #2c3e50;
+  #7f8c8d */
+  /* #d35400 */
 $colors: (
-	facebook:    		#3d5c95,
-	twitter:     		#2eb1eb,
-	google-plus: 		#f37b65,
-	instagram:   		#9f1e97,
-	linkedin:    		#0077b5,
-	youtube:     		#e34336,
-    vimeo:       		#00b3ec,
-						
-    lightgrey:		rgba(74,74,74,.3),
-    mediumgrey:			rgba(74,74,74,.7),
-	
-	darkgrey: 			#4A4A4A,
-	darkgrey60pc:    	rgba(74,74,74,.6),
-	red:				#F03746,
-	grey:          		#B9B9B9,
-	offwhite:  	  		#F1F1F1,
-	galleryback:        #39393a,
-	buttongrey:         #d8d8d8,
+	dark:    		#2c3e50,
+	lightgray:     	#7f8c8d,
+	orange: 		#d35400,
 
-	shepparton: 		#F03746,
-	country: 			#8bc833,
-	dairy:				#118ce0,
+	pale: rgb(78, 97, 121),
+	light: rgb(152, 162, 175),
+	greg: rgb(55, 75, 100),
+	john: rgb(110, 125, 144),
+	blue: rgb(27, 63, 110),
+	frank: #0f222b,
 
-	darkcountry:		#0d522e,
+
 );
 
 
@@ -76,24 +66,23 @@ $colors: (
 //Responsive break points
 
 
-$header-break:              992px;
-$large-break:				1450px;
-$md-break:                  1200px; /* col-lg  */
-$mmd-break:                 992px;  /* col-md ipad landscape */
-$mmd-break-down:            991px;  /* col-md ipad landscape */
-$sm-break:                  768px;  /* col-sm ipad */
-$sm-break-down:             767px;  /* col-sm ipad */
-$mobile-break:              620px;	/* col-xs */
-$sm-mobile-break:           490px;	/* col-xs */
+// $header-break:              992px;
+// $large-break:				1450px;
+// $md-break:                  1200px; /* col-lg  */
+// $mmd-break:                 992px;  /* col-md ipad landscape */
+// $mmd-break-down:            991px;  /* col-md ipad landscape */
+// $sm-break:                  768px;  /* col-sm ipad */
+// $sm-break-down:             767px;  /* col-sm ipad */
+// $mobile-break:              620px;	/* col-xs */
+// $sm-mobile-break:           490px;	/* col-xs */
 
 //Navbar
-$logo-width:                52px;
-$logo-height:               52px;
-$sticked-logo-height:       34px;
-$sticked-logo-width:        34px;
-$navbar-height:             70px;
+// $logo-width:                52px;
+// $logo-height:               52px;
+// $sticked-logo-height:       34px;
+// $sticked-logo-width:        34px;
+// $navbar-height:             70px;
 
-$center:					center;
 
 
 $desktop: 				"screen and (max-width : 1194px)";

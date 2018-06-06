@@ -1,9 +1,9 @@
 import React from 'react';
-import classes from './Plant.css';
 
 const Plant = (props) => {
     return (
-        <div className={classes.Plant}>
+        <div onClick={ () => props.clicked(props.plantid) } className="plant">
+            <div className="plant__img"></div>
             <ul data-id={props.plantid}>
                 <li>Created: {props.created}</li>
                 <li>Serial: {props.serial}</li>

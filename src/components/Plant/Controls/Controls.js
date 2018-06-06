@@ -1,9 +1,8 @@
 import React from 'react';
-import classes from './Controls.css';
 
 const controls = (props) => {
     return (
-        <div className={classes.Controls}>
+        <div className="user-controls">
             <p>Plant controls</p>
         </div>
     )

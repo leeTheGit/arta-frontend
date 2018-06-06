@@ -1,3 +1,12 @@
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-auto-rows: 150px;
+    grid-gap: 10px;
+}
+
+
 a.fancybox-close {z-index:1 !important;}
 
 div.fancybox-title {display:none !important;}
@@ -31,14 +40,14 @@ h4.modal-title {
 }
 
 .card-group{
-    @media screen and (max-width: $sm-break){
+    @media #{$mobile} {        
         margin-bottom: 35px;
     }
 }
 
 
 .mobile-full-width {
-    @media screen and (max-width: $mobile-break){
+    @media #{$mobile} {        
         padding:0;
     }
 }
@@ -110,6 +119,7 @@ div[class*="col-sm"] {
 .u-margin-top-100 { margin-top: 100px; }
 .u-margin-top-80 { margin-top: 80px; }
 .u-margin-top-60 { margin-top: 60px; }
+.u-margin-top-50 { margin-top: 50px; }
 .u-margin-top-40 { margin-top: 40px; }
 .u-margin-top-30 { margin-top: 30px; }
 .u-margin-top-25 { margin-top: 25px; }
@@ -216,7 +226,7 @@ div[class*="col-sm"] {
 
 
 
-@media (max-width: $sm-break-down){
+@media #{$mobile} {       
     .five-cols .col-md-1,
     .five-cols .col-sm-1,
     .five-cols .col-lg-1  {
@@ -224,23 +234,6 @@ div[class*="col-sm"] {
         *width: 100%;
     }
 }
-@media (min-width: $sm-break) {
-    .five-cols .col-md-1,
-    .five-cols .col-sm-1,
-    .five-cols .col-lg-1 {
-        width: 20%;
-        *width: 20%;
-    }
-}
-
-@media (min-width: $sm-break) {
-    .two-cols {
-        .col-md-1, .col-sm-1, .col-lg-1 {
-            width: 50%;
-        }
-    }
-}
-
 @media #{$desktop-up} {
     .two-cols .col-md-2,
     .two-cols .col-sm-2,
@@ -250,13 +243,7 @@ div[class*="col-sm"] {
     }
 }
 
-@media (min-width: $mobile-break) and (max-width: $mmd-break-down) {
-    .sm-two-cols {
-        .col-md-1, .col-sm-1, .col-lg-1 {
-            width: 50%;
-        }
-    }
-}
+
 
 
 @media #{$tablet} {
@@ -315,25 +302,6 @@ div[class*="col-sm"] {
 
 
 
-
-div.space40 {
-    margin-top:40px;
-
-    @media screen and (max-width: $sm-break-down){
-        margin-top:20px;
-    }
-}
-
-
-hr.divide {
-    margin:28px 0;
-    border: 0;
-    border-top: 1px solid color(lightgrey);
-    @media screen and (max-width: $sm-break-down){
-        margin: 15px 0;
-    }
-}
-
 hr.divide24 {
     margin:24px 0;
     border: 0;
@@ -374,56 +342,6 @@ hr.divide10 {
 
 .u-block {
     display:block;
-}
-
-.advert {
-    margin: 20px 0 20px 0;
-    @media screen and (min-width: $mmd-break){
-            margin: 40px 0 40px 0;
-        }
-        @media screen and (max-width: '320px'){
-            margin-left: -15px;
-        }
-    .mini{
-        img{
-            margin-top: -25px;
-        }
-    }
-}
-
-.advert-banner-small {
-
-    margin-bottom:58px;
-    margin-top:58px;
-
-    > div.advert {
-        width:970px;
-        height:90px;
-        margin: 0 auto;
-        @media screen and (max-width: $mmd-break){
-            width: 728px;
-            height: 90px;
-        }
-        @media screen and (max-width: $sm-break-down){
-            width: 300px;
-            height: 75px;
-        }
-        
-    }
-}
-.lockad{
-    position: inherit;
-}
-.fixad{
-    position:  fixed;
-    top: 0;
-}
-
-.divide {
-    margin-top: 32px;
-    margin-bottom: 42px;
-    border: 0;
-    border-top: 1px solid color(lightgrey);
 }
 
 
@@ -481,7 +399,7 @@ hr.divide10 {
   display:         flex;
 }
 .row-eq-height-desk {
-    @media screen and (min-width: $sm-break) {
+    @media #{$tablet-up} {
       display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;

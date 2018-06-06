@@ -1,5 +1,4 @@
 import React, {Component}   from 'react';
-import classes              from './Newuserform.css';
 import Button               from '../../UI/Button/Button';
 import axios                from 'axios';
 
@@ -34,32 +33,32 @@ class NewUserForm extends Component {
         });
 
         return (
-            <div className={classes.Newuserform}>
-                <Button clicked={this.props.removeForm}>X</Button>
+            <div className="new-user-form">
+                <Button btnType="new-user-form__remove" clicked={this.props.removeForm}></Button>
                 <h2>New user</h2>
                 <form>
                     
-                    <div className={classes.user__inputgroup}>
+                    <div className="user__inputgroup">
                         <label>Username</label>
                         <input type="text"  onChange={(e) => {this.props.updateForm({username: e.target.value})}} />
                     </div>
 
-                    <div className={classes.user__inputgroup}>
+                    <div className="user__inputgroup">
                         <label id="firstname">First Name</label>
                         <input type="text" name="firstname" val="" onChange={(e) => {this.props.updateForm({firstname: e.target.value})}} />
                     </div>
 
-                    <div className={classes.user__inputgroup}>
+                    <div className="user__inputgroup">
                         <label id="lastname">Last Name</label>
                         <input type="text" name="lastname" val=""  onChange={(e) => {this.props.updateForm({lastname: e.target.value})}} />
                     </div>
 
-                    <div className={classes.user__inputgroup}>
+                    <div className="user__inputgroup">
                         <label id="password">Password</label>
                         <input type="text" name="password" val=""  onChange={(e) => {this.props.updateForm({password: e.target.value})}} />
                     </div>
 
-                    <div className={classes.user__inputgroup}>
+                    <div className="user__inputgroup">
                         <select name="cars">
                             {groupElements}
                         </select>

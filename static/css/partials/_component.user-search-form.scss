@@ -1,0 +1,25 @@
+.user-search-form {
+    float:right;
+    margin-right: 30px;
+    margin-top: 10px;
+}
+
+.user-search-form__button {
+    width:15px;
+    height:15px;
+    background: url('/static/icons/x-mark-thin.svg');
+    background-repeat:no-repeat;
+    background-size:contain;
+
+}
+
+.user-search-form__input {
+    border:none;
+    margin-right:10px;
+    background-color: color(light);
+}
+
+.user-search-form__label {
+    margin-right:10px;
+    color: color(light)
+}

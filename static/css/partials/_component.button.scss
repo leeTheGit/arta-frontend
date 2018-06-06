@@ -1,0 +1,26 @@
+.button {
+    border: none;
+    color: white;
+    outline: none;
+    cursor: pointer;
+    font: inherit;
+    background-color: transparent;
+    /* padding: 10px; */
+    /* margin: 10px; */
+    /* font-weight: bold; */
+}
+
+.success {
+    color: #5C9210;
+}
+
+.danger {
+   color: #944317;
+}
+
+.user__delete {
+    position:absolute;
+    top:5px;
+    right:10px;
+
+}
