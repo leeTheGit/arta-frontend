@@ -13,14 +13,14 @@
 
 .user__label {
     color:black;
-    font-family:'Lato',Helvetica,Arial,sans-serif;
+    font-family:$base-font-family;
     font-size:rem(13);
     min-width: 100px;
     display: inline-block;
 }
 
 .user__input {
-    font-family:'Lato',Helvetica,Arial,sans-serif;
+    font-family:$base-font-family;
     color:black;
     border: none;
     padding:4px;

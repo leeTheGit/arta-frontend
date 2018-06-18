@@ -177,7 +177,7 @@ class Users extends Component {
         return (
             <div className="Users">
                 <Usercontrols 
-                    newUser={this.newUserHandler}
+                    newItem={this.newUserHandler}
                     updateSearch={this.onSearchChange}
                     clearSearch={this.clearSearch}
                     search={this.state.search}

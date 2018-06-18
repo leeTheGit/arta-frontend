@@ -6,7 +6,7 @@ import moment               from 'moment';
 import checklist            from '../../assets/checklist.svg';
 import Button               from '../../components/UI/Button/Button';
 import 'react-dates/initialize';
-import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import { SingleDatePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
 
 class Plant extends Component {
@@ -14,21 +14,36 @@ class Plant extends Component {
 
     state = {
         plant: [],
+        locations:[],
         date: moment()
     };
 
-    componentWillMount() {
+    fetchPlants = () => {
         axios.get('/plant/' + this.props.match.params.id + '?data=true')
         .then( response => {
-            var data = response.data.data;
-            if (data) {
-                this.setState({plant: data});
+            if (response.data.data) {
+                this.setState({plant: response.data.data});
             }
-            console.log(data);
         }).catch( response => {
             // console.log(response);
         });
+    }
 
+    fetchLocations = () => {
+        axios.get('/location')
+        .then( response => {
+            if (response.data.data) {
+                this.setState({locations: response.data.data});
+            }
+        }).catch( response => {
+            // console.log(response);
+        });
+    }
+
+
+    componentWillMount() {
+        this.fetchPlants();
+        this.fetchLocations();
     }
 
     onDatesChange = () => {
@@ -55,6 +70,7 @@ class Plant extends Component {
         const now = moment();
         const born = moment(this.state.plant.created_at);
         const age = now.diff(born, 'days');
+        const location = this.state.plant.location;
         // const age = moment.diff(moment(this.state.plant.created_at)).format("m[m] s[s]")
         if (this.state.plant.data.length > 0) {
             data = this.state.plant.data.slice(0,1)[0];
@@ -76,9 +92,9 @@ class Plant extends Component {
         if (this.state.plant.data.length > 1) {
             data = this.state.plant.data.slice(1);
 
-            otherDataPoints = data.map((d) => {
+            otherDataPoints = data.map((d, i) => {
                 return (
-                    <div className="grid" style={{overflow:'hidden'}}>
+                    <div key={i} className="grid" style={{overflow:'hidden'}}>
                         <Plantdata customClass="other" label="Temperature"  data={d.temperature} />
                         <Plantdata customClass="other" label="Health"       data={d.health} />
                         <Plantdata customClass="other" label="Humidity"     data={d.humidity} />
@@ -104,6 +120,7 @@ class Plant extends Component {
                 />
                  <h1 className="single-plant__serial">{this.state.plant.serial}</h1>
                  <h2 className="single-plant__serial">{age} days old</h2>
+                 <h3 className="single-plant__location>">{location}</h3>
                  <Button clicked={this.checkListHandler} btnType="single-plant__checklist-button" >
                     <img className="single-plant__checklist" src={checklist} alt="checklist" />
                 </Button>

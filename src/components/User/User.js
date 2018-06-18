@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../UI/Button/Button';
-import "../../assets/styles/concat.min.css";
+// import "../../assets/styles/concat.min.css";
 
 const user = (props) => {
     return (
