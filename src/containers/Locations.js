@@ -42,7 +42,7 @@ class Locations extends Component {
         new : null
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.fetchLocations();
     }
 

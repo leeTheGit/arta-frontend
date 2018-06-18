@@ -44,6 +44,7 @@ class Plants extends Component {
                         serial  = {plant.serial}
                         lifecycle = {plant.lifecycle}
                         created = {plant.created_at}
+                        location = {plant.name}
                 />
             );
         });

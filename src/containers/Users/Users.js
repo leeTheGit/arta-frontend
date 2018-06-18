@@ -23,12 +23,14 @@ class Users extends Component {
     }
 
     componentDidMount () {
+        this.fetchUsers();
+    }
+
+    fetchUsers = () => {
         axios.get('/user')
             .then( response => {
-                console.log(response);
                 if (response.data) {
-                    var data = response.data.data;
-                    this.setState({users:data});
+                    this.setState({users:response.data.data});
                 }
         }).catch( response => {
             console.log(response);

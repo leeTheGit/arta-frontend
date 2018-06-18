@@ -1,10 +1,12 @@
 import React, {Component}   from 'react';
-import axios                from 'axios';
-import Spinner              from '../../components/UI/Spinner/Spinner';
 import Plantdata            from './plantdata';
-import moment               from 'moment';
 import checklist            from '../../assets/checklist.svg';
+import Spinner              from '../../components/UI/Spinner/Spinner';
+import moment               from 'moment';
 import Button               from '../../components/UI/Button/Button';
+import axios                from 'axios';
+import qs                   from 'qs';
+
 import 'react-dates/initialize';
 import { SingleDatePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
@@ -41,7 +43,7 @@ class Plant extends Component {
     }
 
 
-    componentWillMount() {
+    componentDidMount() {
         this.fetchPlants();
         this.fetchLocations();
     }
@@ -54,6 +56,22 @@ class Plant extends Component {
     }
     checkListHandler = () => {
         console.log('clicked the checklist');
+    }
+
+    selectLocation = (e) => {
+        const plant = {...this.state.plant};
+        const value = e.target.value;
+        axios.put('/plant/' + this.state.plant.id, qs.stringify( {'location': value} ) )
+        .then( response => {
+            if (response.data.data) {
+                plant.location = value;
+                this.setState({plant: plant});
+            }
+        }).catch( response => {
+            // console.log(response);
+        });
+
+        console.log('location selected');
     }
 
     render() {
@@ -70,7 +88,16 @@ class Plant extends Component {
         const now = moment();
         const born = moment(this.state.plant.created_at);
         const age = now.diff(born, 'days');
-        const location = this.state.plant.location;
+
+        
+        const locationElements = this.state.locations.map((location) => {
+            return <option key={location.id} value={location.id}> {location.name}</option>
+        });
+
+
+
+
+
         // const age = moment.diff(moment(this.state.plant.created_at)).format("m[m] s[s]")
         if (this.state.plant.data.length > 0) {
             data = this.state.plant.data.slice(0,1)[0];
@@ -118,9 +145,15 @@ class Plant extends Component {
                     id="your_unique_id" // PropTypes.string.isRequired,
                                       
                 />
-                 <h1 className="single-plant__serial">{this.state.plant.serial}</h1>
-                 <h2 className="single-plant__serial">{age} days old</h2>
-                 <h3 className="single-plant__location>">{location}</h3>
+
+                <h1 className="single-plant__serial">{this.state.plant.serial}</h1>
+                <h2 className="single-plant__serial">{age} days old</h2>
+
+                <select className="single-plant__locations" value={this.state.plant.location} onChange={(e) => this.selectLocation(e)}>
+                    {locationElements}
+                </select>
+
+
                  <Button clicked={this.checkListHandler} btnType="single-plant__checklist-button" >
                     <img className="single-plant__checklist" src={checklist} alt="checklist" />
                 </Button>

@@ -13,7 +13,7 @@ class Rooms extends Component {
     };
 
 
-    componentWillMount() {
+    componentDidMount() {
         this.fetchRooms();
     }
 
@@ -33,7 +33,7 @@ class Rooms extends Component {
 
     getId(max) {
         return Math.floor(Math.random() * Math.floor(max));
-      }
+    }
       
     newLocation = (e) => {
         const state = {

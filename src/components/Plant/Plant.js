@@ -8,6 +8,7 @@ const Plant = (props) => {
                 <li>Created: {props.created}</li>
                 <li>Serial: {props.serial}</li>
                 <li>Life Cycle: {props.lifecycle}</li>
+                <li>Location: {props.location}</li>
             </ul>
         </div>
     )
