@@ -13,24 +13,33 @@ import {
 
 const DragHandle = SortableHandle(() => <span className="location__handle">::</span>);
 
-const SortableItem = SortableElement( ( {value, click} ) =>
+const SortableItem = SortableElement( ( {value, click, rooms, roomSelect} ) =>
     <li className="location">
         <DragHandle />
         <p className="location__p" id={value.id} onClick={()=> click(value.id)}>{value.name}</p>
+        <select className="single-plant__locations" onChange={(e) => roomSelect(e)}>
+            {rooms}
+        </select>
+
         {/* <Button btnType="location__delete" clicked={(e) => props.delete(props.userid, props.firstname)}></Button> */}
 
     </li>
 );
 
-const SortableList = SortableContainer(({items, clicked}) => {
-    console.log(items);
-  return (
-    <ul>
-      {items.map((value, index) => (
-        <SortableItem key={`item-${index}`} click={clicked} index={value.name} value={value} />
-      ))}
-    </ul>
-  );
+const SortableList = SortableContainer(({items, clicked, rooms, roomSelect}) => {
+
+    return (
+        <ul>
+        {items.map((value, index) => (
+            <SortableItem key={`item-${index}`} 
+                          click={clicked} 
+                          roomSelect={roomSelect} 
+                          index={index} 
+                          rooms={rooms} 
+                          value={value} />
+        ))}
+        </ul>
+    );
 });
 
 
@@ -39,16 +48,25 @@ class Locations extends Component {
 
     state = {
         locations: [],
+        rooms: [],
         new : null
     };
 
-    componentDidMount() {
-        this.fetchLocations();
+
+    componentDidMount() 
+    {
+        axios.all([this.fetchLocations(), this.fetchRooms()])
+        .then(axios.spread( (locations, rooms) => {
+            console.log(rooms, locations);
+            this.setState({
+                rooms: rooms.data.data || [],
+                locations: locations.data.data || []
+            });
+        }));
     }
 
     onSortEnd = ({oldIndex, newIndex}) => {
         const {locations} = this.state;
-        console.log(oldIndex, newIndex);
         this.setState({
             locations: arrayMove(locations, oldIndex, newIndex),
         });
@@ -56,19 +74,30 @@ class Locations extends Component {
     
 
     fetchLocations = () => {
-        axios.get('/location/')
+        return axios.get('/location/');
+    }
+
+    fetchRooms = () => {
+        return axios.get('/room/');
+    }
+
+    selectRoom = (e) => {
+        const data = {...this.state.plant};
+        const value = e.target.value;
+        console.log(e);
+        console.log(value);
+        axios.put('/location/' + this.state.plant.id, qs.stringify( {'room': value} ) )
         .then( response => {
-            var data = response.data.data;
-            if (data) {
-                this.setState({locations: data});
+            if (response.data.data) {
+                data.location = value;
+                this.setState({location: data});
             }
-            console.log(data);
         }).catch( response => {
             // console.log(response);
         });
+
+        console.log('location selected');
     }
-
-
     getId(max) {
         return Math.floor(Math.random() * Math.floor(max));
       }
@@ -113,6 +142,12 @@ class Locations extends Component {
             return <p>There are no locations!!</p>
         }
 
+        const rooms = this.state.rooms.map((room) => {
+            return <option key={room.id} value={room.id}> {room.name}</option>
+        });
+
+
+
         let newLocation = null;
 
         if (this.state.new) {
@@ -129,6 +164,8 @@ class Locations extends Component {
                                         onSortEnd={this.onSortEnd} 
                                         useDragHandle={true} 
                                         clicked={this.delete}
+                                        roomSelect={this.selectRoom}
+                                        rooms={rooms}
                                         />
         
         return (

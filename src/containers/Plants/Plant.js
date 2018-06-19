@@ -21,31 +21,24 @@ class Plant extends Component {
     };
 
     fetchPlants = () => {
-        axios.get('/plant/' + this.props.match.params.id + '?data=true')
-        .then( response => {
-            if (response.data.data) {
-                this.setState({plant: response.data.data});
-            }
-        }).catch( response => {
-            // console.log(response);
-        });
+        return axios.get('/plant/' + this.props.match.params.id + '?data=true');
     }
 
     fetchLocations = () => {
-        axios.get('/location')
-        .then( response => {
-            if (response.data.data) {
-                this.setState({locations: response.data.data});
-            }
-        }).catch( response => {
-            // console.log(response);
-        });
+        return axios.get('/location');
     }
 
 
-    componentDidMount() {
-        this.fetchPlants();
-        this.fetchLocations();
+    componentDidMount() 
+    {
+        axios.all([this.fetchPlants(), this.fetchLocations()])
+        .then(axios.spread( (plant, locations) => {
+            this.setState({
+                plant: plant.data.data || [],
+                locations: locations.data.data || []
+            });
+        }));
+      
     }
 
     onDatesChange = () => {
