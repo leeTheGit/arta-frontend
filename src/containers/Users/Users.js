@@ -133,10 +133,10 @@ class Users extends Component {
         if (this.state.newUser) {
             newUserForm = <Modal show="true">
                             <NewUserForm 
-                                removeForm={this.removeFormHandler}
-                                updateForm={this.updateForm}
-                             addUser={this.addUserHandler} 
-                              setGroups={this.setGroups}
+                                removeForm ={this.removeFormHandler}
+                                updateForm ={this.updateForm}
+                                addUser    ={this.addUserHandler} 
+                                setGroups  ={this.setGroups}
                             />
                         </Modal>
         }

@@ -3,9 +3,12 @@
     width: 80%;
     margin: auto;
     margin-bottom: 10px;
-    padding: 20px;
+    padding: 0 40px 0 20px;
+    min-height:60px;
     text-align: center;
     display:flex;
+    align-items: center;
+    position:relative;
 }
 
 
@@ -15,7 +18,25 @@
     font-size: 20px;
 }
 
+.room__spacer {
+    flex-grow:2;
+}
 
 .room__new {
     background:cyan;
+}
+
+.room_temp {
+    font-family: $base-font-family;
+    font-size:rem(25);
+    font-weight:200;
+    border:1px solid color(back);
+    justify-content: center;
+    padding: 10px;
+    margin-right: 10px;
+
+
+}
+.room_humidity {
+
 }

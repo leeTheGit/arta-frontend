@@ -3,6 +3,7 @@
     box-sizing: border-box;
     display:block;
     width:100%;
+    font-weight:300;
 }
 
 .NavigationItem a {
@@ -33,14 +34,15 @@
         color:white;
         height:100%;
         padding:16px 10px;
-        border-bottom: 4px solid transparent;
+        // border-bottom: 4px solid transparent;
     }
     
     .NavigationItem a:hover,
     .NavigationItem a:active,
     .NavigationItem a.active {
-        border-bottom:4px solid #40A42c;
-        color:white;
+        font-weight:400;
+        // border-bottom:4px solid #40A42c;
+        color: color(brightGreen);
     }
     
 }

@@ -52,8 +52,8 @@ function axiosListener() {
         window.axios.interceptors.request.eject(axios.myInterceptor);
     }
     else {
-        const username = state.username;
-        const password = state.password;
+        // const username = state.username;
+        // const password = state.password;
 
         window.axios.myInterceptor = window.axios.interceptors.request.use( config => {
             const newState = store.getState();
