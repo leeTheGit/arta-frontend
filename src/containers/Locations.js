@@ -53,7 +53,7 @@ class Locations extends Component {
         locations: [],
         rooms: [],
         new : null,
-        selectedRoom: 0
+        selectedRoom: null
     };
 
 
@@ -71,6 +71,8 @@ class Locations extends Component {
         this.fetchRooms().then(roomResponse => {
 
             this.setState({rooms: roomResponse.data.data || []}, () => {
+                
+                if (!this.state.selectedRoom) return;
 
                 this.fetchLocations().then( locResponse => {
 
@@ -124,6 +126,7 @@ class Locations extends Component {
         axios.put('/location/' + locationId, qs.stringify( {'room_id': value} ) )
         .then( response => {
             if (response.data.data) {
+                // if (!this.state.selectedRoom) return;
                 this.fetchLocations().then( (locations) => {
                     this.setState({
                         locations: locations.data.data || []

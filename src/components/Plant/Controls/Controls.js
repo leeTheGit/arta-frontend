@@ -1,9 +1,10 @@
-import React from 'react';
+import React        from 'react';
+import Button       from '../../UI/Button/Button';
 
 const controls = (props) => {
     return (
         <div className="user-controls">
-            <p>Plant controls</p>
+            <Button btnType="user-controls__new" clicked={props.newItem}></Button>
         </div>
     )
 }
