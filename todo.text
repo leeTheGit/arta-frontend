@@ -1,3 +1,3 @@
-Add user id to plant data form
+add foreign key on user_id in pantdata table
 have second person checking
 update time for plantdata

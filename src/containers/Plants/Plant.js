@@ -79,7 +79,10 @@ class Plant extends Component {
 
     newPlantData = (e) => {
         console.log('new form');
-        this.setState({new: true});
+        this.setState({
+            new: true,
+            selectedData: null,
+        });
     }
     removeFormHandler = () => {
         this.setState({new:false})
@@ -99,6 +102,18 @@ class Plant extends Component {
         console.log(this.state.plant.data[selected]);
     }
 
+    deleteData = (id) => {
+        console.log(id);
+        axios.delete('/plantdata/' + id)
+        .then( response => {
+            
+
+        }).catch( response => {
+            console.log(response);
+        });
+
+
+    }
 
 
 
@@ -132,22 +147,32 @@ class Plant extends Component {
 
 
         let form = null;
+
         if (this.state.new) {
+            let plantData = {};
+
+            if (this.state.selectedData) { // then we're updating
+                plantData = {
+                    data_id :       this.state.plant.data[this.state.selectedData].id,
+                    height :        this.state.plant.data[this.state.selectedData].height,
+                    notes :         this.state.plant.data[this.state.selectedData].notes,
+                    ph :            this.state.plant.data[this.state.selectedData].ph,
+                    conductivity :  this.state.plant.data[this.state.selectedData].conductivity,
+                    temperature :   this.state.plant.data[this.state.selectedData].temperature,
+                    humidity :      this.state.plant.data[this.state.selectedData].humidity,
+                    lux :           this.state.plant.data[this.state.selectedData].lux,
+                    light_hours :   this.state.plant.data[this.state.selectedData].light_hours,
+                    health :        this.state.plant.data[this.state.selectedData].health,
+                };
+            }
+
+
+
             form = <Modal show="true">
                         <Plantdataform 
                             removeForm =    {this.removeFormHandler}
                             plant_id =      {this.state.plant.id}
-                            data_id =       {this.state.plant.data[this.state.selectedData].id}
-                            height =        {this.state.plant.data[this.state.selectedData].height}
-                            notes =         {this.state.plant.data[this.state.selectedData].notes}
-                            ph =            {this.state.plant.data[this.state.selectedData].ph}
-                            conductivity =  {this.state.plant.data[this.state.selectedData].conductivity}
-                            temperature =   {this.state.plant.data[this.state.selectedData].temperature}
-                            humidity =      {this.state.plant.data[this.state.selectedData].humidity}
-                            lux =           {this.state.plant.data[this.state.selectedData].lux}
-                            light_hours =   {this.state.plant.data[this.state.selectedData].light_hours}
-                            health =        {this.state.plant.data[this.state.selectedData].health}
-                    
+                            {...plantData}
                         />
                     </Modal>
         }
@@ -180,6 +205,7 @@ class Plant extends Component {
                 return (
                     <Aux key={i}>
                         <button className="" onClick={() =>this.updateData(i+1)}>Update</button>
+                        <button className="" onClick={() =>this.deleteData(d.id)}>Delete</button>
 
                         <div key={i} className="grid" style={{overflow:'hidden'}}>
                             <Plantdata customClass="other" label="Temperature"  data={d.temperature} />
