@@ -1,0 +1,17 @@
+.plant-data-line {
+    display:flex;
+}
+
+.plant-data-line__header {
+    margin-top:40px;
+}
+
+.plant-data-line__data-point {
+    font-weight:200;
+    color:color(offwhite);
+    flex-grow:1;
+    flex-basis: 50px;
+    text-align: center;
+
+    // border: 1px solid green;
+}

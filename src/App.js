@@ -9,7 +9,7 @@ import Login                from './containers/Login/Login';
 import Users                from './containers/Users/Users';
 import store                from './store/store';
 import Rooms                from './containers/Room';
-import Plant                from './containers/Plants/Plant';
+import Plant                from './containers/Plants/Single_plant';
 import axios                from 'axios';
 import Home                 from './containers/Home/Home';
 

@@ -1,19 +1,24 @@
 import React, {Component}   from 'react';
 import Plantcontrols        from '../../components/Plant/Controls/Controls';
 import Plantdata            from './plantdata';
+import Plantdataline        from '../../components/Plant/Plantdataline';
+import Plantdataoptions     from '../../components/Plant/Plantdataoptions';
+import Plantdataheader      from '../../components/Plant/Plantdataheader';
 import Plantdataform        from './Plantdataform';
-import checklist            from '../../assets/checklist.svg';
 import Spinner              from '../../components/UI/Spinner/Spinner';
 import moment               from 'moment';
-import Button               from '../../components/UI/Button/Button';
 import Modal                from '../../components/UI/Modal/Modal';
 import axios                from 'axios';
 import qs                   from 'qs';
 import Aux                  from '../../hoc/Aux';
+import Separator            from '../../components/UI/Separator/Separator';
 
-import 'react-dates/initialize';
-import { SingleDatePicker } from 'react-dates';
-import 'react-dates/lib/css/_datepicker.css';
+
+import InputMoment          from 'input-moment';
+// import Button               from '../../components/UI/Button/Button';
+// import 'react-dates/initialize';
+// import { SingleDatePicker } from 'react-dates';
+// import 'react-dates/lib/css/_datepicker.css';
 
 class Plant extends Component {
 
@@ -23,9 +28,57 @@ class Plant extends Component {
         new : null,
         locations:[],
         date: moment(),
-        selectedData: null
+        selectedData: null,
+        m: moment(),
+        calander: false,
     };
+    
+    handleChange = m => {
+        console.log(m);
+        this.setState({ m });
+    };
+    
+    handleSave = () => {
+        console.log('saved', this.state.m.format('llll'));
+        const date = this.state.m.format('YYYY-MM-DD HH:mm:ss');
 
+        const data = this.state.plant.data[this.state.selectedData];
+        console.log('/plantdata/' + data.id);
+        console.log(date);
+        axios.put('/plantdata/' + data.id, qs.stringify( {'time': date} ) )
+        .then( response => {
+            this.setState({ calander: false });
+
+            console.log(response);
+            if (response.data.data) {
+                this.fetchPlants().then((response) => {
+                    this.setState({
+                        plant: response.data.data || [],
+                    });
+        
+                });
+            }
+        }).catch( response => {
+            // console.log(response);
+        });
+
+
+
+        console.log(date, data);
+
+    };
+    
+    openCalander = (id, datetime) => {
+        console.log(id, datetime);
+        this.setState({ 
+            selectedData: id,
+            m: moment(datetime),
+            calander: true
+         });
+    }
+    
+    
+    
     fetchPlants = () => {
         console.log()
         return axios.get('/plant/' + this.props.match.params.id + '?data=true');
@@ -87,6 +140,9 @@ class Plant extends Component {
     removeFormHandler = () => {
         this.setState({new:false})
     }
+    removeCalanderHandler = () => {
+        this.setState({calander:false})
+    }
 
 
 
@@ -127,7 +183,6 @@ class Plant extends Component {
 
     render() {
 
-        console.log(this.state);
         if (!this.state.plant.serial) {
             return <Spinner />
         }
@@ -144,6 +199,24 @@ class Plant extends Component {
         const locationElements = this.state.locations.map((location) => {
             return <option key={location.id} value={location.id}> {location.name}</option>
         });
+
+
+        let calander = null;
+        if (this.state.calander) {
+
+            calander = <Modal show="true" class_modifier="modal--date">
+                <button onClick={this.removeCalanderHandler}>x</button>
+                <InputMoment
+                    moment={this.state.m}
+                    onChange={this.handleChange}
+                    onSave={this.handleSave}
+                    minStep={1} // default
+                    hourStep={1} // default
+                    prevMonthIcon="ion-ios-arrow-left" // default
+                    nextMonthIcon="ion-ios-arrow-right" // default
+                />
+            </Modal>
+        }
 
 
         let form = null;
@@ -182,17 +255,23 @@ class Plant extends Component {
         // const age = moment.diff(moment(this.state.plant.created_at)).format("m[m] s[s]")
         if (this.state.plant.data.length > 0) {
             data = this.state.plant.data.slice(0,1)[0];
+            const recent_date = moment(data.time).format('DD MMM');
+            const data_date = moment(data.time).format('YYYY-MM-DD HH:mm:ss');
+            const data_id = data.id;
 
             datapoints = (
-                <div className="grid" style={{overflow:'hidden'}}>
-                    <Plantdata label="Temperature"  data={data.temperature} />
-                    <Plantdata label="Health"       data={data.health} />
-                    <Plantdata label="Humidity"     data={data.humidity} />
-                    <Plantdata label="Light hours"  data={data.light_hours} />
-                    <Plantdata label="Height"       data={data.height} />
-                    <Plantdata label="Lux"          data={data.lux} />
-                    <Plantdata label="PH"           data={data.ph} />
-                </div>
+                <Aux>
+                    <time dateTime={data_date} onClick={() => this.openCalander(0, data_date)}>{recent_date}</time>
+                    <div className="single-plant__grid" style={{overflow:'hidden'}}>
+                        <Plantdata label="Temperature"  data={data.temperature} />
+                        <Plantdata label="Health"       data={data.health} />
+                        <Plantdata label="Humidity"     data={data.humidity} />
+                        <Plantdata label="Light hours"  data={data.light_hours} />
+                        <Plantdata label="Height"       data={data.height} />
+                        <Plantdata label="Lux"          data={data.lux} />
+                        <Plantdata label="PH"           data={data.ph} />
+                    </div>
+                </Aux>
             );
 
         }
@@ -202,20 +281,26 @@ class Plant extends Component {
 
             otherDataPoints = data.map((d, i) => {
                 console.log(d);
+                const date = moment(d.time).format('DD MMM');
+                // const data_date2 = moment(data.time).format('YYYY-MM-DD HH:mm:ss');
+
                 return (
                     <Aux key={i}>
-                        <button className="" onClick={() =>this.updateData(i+1)}>Update</button>
-                        <button className="" onClick={() =>this.deleteData(d.id)}>Delete</button>
+                        
+                        <ul key={i} className="plant-data-line" style={{overflow:'hidden'}}>
+                            <Plantdataline customClass="" data={date} click={() => this.openCalander(i+1, d.time)}/>
+                            <Plantdataline customClass="" data={d.temperature} />
+                            <Plantdataline customClass="" data={d.health} />
+                            <Plantdataline customClass="" data={d.humidity} />
+                            <Plantdataline customClass="" data={d.light_hours} />
+                            <Plantdataline customClass="" data={d.height} />
+                            <Plantdataline customClass="" data={d.lux} />
+                            <Plantdataline customClass="" data={d.ph} />
+                            <Plantdataoptions customClass="" updateData={() => this.updateData(i+1)} deleteData={() => this.deleteData(d.id)} />
 
-                        <div key={i} className="grid" style={{overflow:'hidden'}}>
-                            <Plantdata customClass="other" label="Temperature"  data={d.temperature} />
-                            <Plantdata customClass="other" label="Health"       data={d.health} />
-                            <Plantdata customClass="other" label="Humidity"     data={d.humidity} />
-                            <Plantdata customClass="other" label="Light hours"  data={d.light_hours} />
-                            <Plantdata customClass="other" label="Height"       data={d.height} />
-                            <Plantdata customClass="other" label="Lux"          data={d.lux} />
-                            <Plantdata customClass="other" label="PH"           data={d.ph} />
-                        </div>
+                        </ul>
+                        <Separator type="plant" />
+
                     </Aux>
                 )
             } );
@@ -223,20 +308,13 @@ class Plant extends Component {
         }
 
         return (
-            <div className="container single-plant u-margin-top-50">
+            <div className="container single-plant">
 
                 <Plantcontrols newItem={this.newPlantData} />
 
                 {form}
 
-                <SingleDatePicker 
-                    date={this.state.date} // momentPropTypes.momentObj or null,
-                    onDateChange={date => this.setState({ date })} // PropTypes.func.isRequired
-                    focused={this.state.focused} // PropTypes.bool
-                    onFocusChange={({ focused }) => this.setState({ focused })} // PropTypes.func.isRequired
-                    id="your_unique_id" // PropTypes.string.isRequired,
-                                      
-                />
+                {calander}
 
                 <h1 className="single-plant__serial">{this.state.plant.serial}</h1>
                 <h2 className="single-plant__serial">{age} days old</h2>
@@ -246,10 +324,8 @@ class Plant extends Component {
                 </select>
 
 
-                 <Button clicked={this.checkListHandler} btnType="single-plant__checklist-button" >
-                    <img className="single-plant__checklist" src={checklist} alt="checklist" />
-                </Button>
                 {datapoints}
+                <Plantdataheader />
                 {otherDataPoints}
             </div>
         );
