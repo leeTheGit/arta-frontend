@@ -1,17 +1,21 @@
-import React from 'react';
+import React            from 'react';
 
-import NavigationItems from '../NavigationItems/NavigationItems';
-import DrawerToggle from '../SideDrawer/DrawerToggle/DrawerToggle';
+import NavigationItems  from '../NavigationItems/NavigationItems';
+import DrawerToggle     from '../SideDrawer/DrawerToggle/DrawerToggle';
+import Separator        from '../../UI/Separator/Separator';
+import Aux              from '../../../hoc/Aux';
 
 
 const toolbar = (props) => (
-    <header className="Toolbar">
-        <DrawerToggle click={props.click}/>
-        <nav className="Toolbar-desktopOnly">
-            <NavigationItems isLoggedIn={props.isLoggedIn} />
-        </nav>
-        
-    </header>
+    <Aux>
+        <header className="Toolbar">
+            <DrawerToggle click={props.click}/>
+            <nav className="Toolbar-desktopOnly">
+                <NavigationItems isLoggedIn={props.isLoggedIn} />
+            </nav>
+        </header>
+        <Separator type="header"/>
+    </Aux>
 );
 
 export default toolbar;

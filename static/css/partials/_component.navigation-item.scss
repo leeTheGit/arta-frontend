@@ -20,11 +20,15 @@
 }
 
 
+.NavigationItem--auth {
+    flex-grow:2;
+    text-align:right;
+}
 
 @media (min-width:500px) {
     .NavigationItem {
         margin:0;
-        display:flex;
+        // display:flex;
         height:100%;
         width:auto;
         align-items:center;

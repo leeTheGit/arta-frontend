@@ -1,3 +1,4 @@
 add foreign key on user_id in pantdata table
 have second person checking
-update time for plantdata
+click location from room screen to go to location page
+create api test to mimick a plant having data added over time while changing locations

@@ -14,8 +14,8 @@ const navigationItems = (props) => {
             <NavigationItem link="/rooms">Rooms</NavigationItem>
             <NavigationItem link="/locations">Locations</NavigationItem>
             {props.isLoggedIn 
-                ? <NavigationItem link="/logout">Logout</NavigationItem>
-                : <NavigationItem link="/login">Login</NavigationItem>
+                ? <NavigationItem klass="auth" link="/logout">Logout</NavigationItem>
+                : <NavigationItem klass="auth" link="/login">Login</NavigationItem>
             }
         </ul>
     )

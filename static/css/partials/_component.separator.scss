@@ -1,11 +1,12 @@
 .separator {
-    margin: 20px 0;
+    border-bottom: 1px solid color(separator-light);
+    border-top: 1px solid color(separator-dark);
+    width:auto;
 }
 
-
+.separator__header {
+    margin: 0 0 20px 0;
+}
 .separator__plant {
-    width:auto;
-    // height:2px;
-    border-bottom: 1px solid rgb(38, 39, 41);
-    border-top: 1px solid black;
+    margin: 20px 0;
 }

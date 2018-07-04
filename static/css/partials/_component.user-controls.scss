@@ -12,7 +12,12 @@
     margin-left: 25px;
     height:23px;
     width:23px;
-    background: url('/static/icons/plus-thin.svg');
+    padding: 30px;
+    background-color: color(brightgreen);
+    border-radius: 50%;
+    background-image: url('/static/icons/plus-thin.svg');
+    background-position-x: 50%;
+    background-position: 50%;
     background-repeat:no-repeat;
     // background-color: rgba(11,200,145, .3);
 }

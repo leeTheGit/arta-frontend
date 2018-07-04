@@ -3,7 +3,7 @@ import React from 'react';
 
 const button = (props) => (
     <button 
-        className={"button " + props.btnType}  
+        className={props.btnType}  
         onClick={props.clicked}>
 
         {props.children}
