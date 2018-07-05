@@ -64,10 +64,11 @@
 }
 .single-plant__data-point {
     font-family: $base-font-family;
-    // color:black;
     color: color(offwhite);
     font-size:rem(60);
     font-weight:200;
+    text-align: center;
+    width: 100%;
 }
 .single-plant__data-point-other {
     font-size:rem(40);

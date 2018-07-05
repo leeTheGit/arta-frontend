@@ -9,8 +9,8 @@ const plantdataoptions = (props) => {
 
     return (
         <li className={pClass.join(" ")}>
-            <button className="" onClick={props.updateData}>Update</button>
-            <button className="" onClick={props.deleteData}>Delete</button>
+            <button className="plant-data-line__button plant-data-line__button--update" onClick={props.updateData}></button>
+            <button className="plant-data-line__button plant-data-line__button--delete" onClick={props.deleteData}></button>
         </li>
     );
 

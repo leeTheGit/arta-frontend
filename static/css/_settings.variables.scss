@@ -12,46 +12,12 @@ $browser-context:           $font-size-base;
 $baseFontSize:				16px; /* ($baseFontSize * 1) + 0px; */
 
 
-// //colors
-// $brand-primary:             #2D9DE2; 
-// $brand-secondary:           #e22f22;
 
-// $dark-color:       			#212427;
-// $white:						#ffffff;
-// $black:             		#000000;
-// $blue:              		#46a5fc;
-
-// $transparent:				rgba(0,0,0,0);
-// $gray-2-color:     			#efefef;
-// $gray-3-color:     			#dfe0e1;
-// $gray-4-color:     			#bfc3c3;
-// $grey:						#808080;
-// $border-color:     			#e0e0e0;
-// $base-color:       			#4B4B4B;
-// $header-color:     			#4B4B4B;
-// $error-color:      			#e73d4a;
-// $success-color:    			#17aa1c;
-// $warning:           		#fecd50;
-// $selected-color:   			#212427;
-// $hover-color:      			#303030;
-// $visited-color:    			#121212;
-// $link-color:       			#212427;
-// $link-hover-color: 			#303030;
-
-
-
-//Buttons
-// $btn-primary-color:              #fff !default;
-// $btn-primary-bg:                 $brand-primary !default;
-// $btn-primary-border:             darken($btn-primary-bg, 5%) !default;
-
-  /* #2c3e50;
-  #7f8c8d */
-  /* #d35400 */
 $colors: (
 	dark:    		#2c3e50,
 	lightgray:     	#7f8c8d,
 	orange: 		#d35400,
+	red:            #d80909,
 	brightGreen:    rgb(57, 208, 92),
 	brightgreen:      #69ca62,
 	back:			rgb(24,27,40),

@@ -15,3 +15,22 @@
 
     // border: 1px solid green;
 }
+
+.plant-data-line__button--update {
+    background-image: url('/static/icons/iconmonstr-update-white.svg?ver2');
+}
+    
+
+.plant-data-line__button--delete {
+    background-image: url('/static/icons/iconmonstr-x-mark-thin-white.svg');
+}
+
+.plant-data-line__button {
+    height:23px;
+    width:23px;
+    background-color:transparent;
+    background-position-x: 50%;
+    background-position: 50%;
+    background-repeat:no-repeat;
+    float:left;
+}

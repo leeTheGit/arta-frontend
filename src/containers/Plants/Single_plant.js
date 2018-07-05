@@ -5,6 +5,8 @@ import Plantdataline        from '../../components/Plant/Plantdataline';
 import Plantdataoptions     from '../../components/Plant/Plantdataoptions';
 import Plantdataheader      from '../../components/Plant/Plantdataheader';
 import Plantdataform        from './Plantdataform';
+import PlantdataForm       from '../../components/Plant/PlantdataForm';
+import PlantdataSave       from '../../components/Plant/PlantdataSave';
 import Spinner              from '../../components/UI/Spinner/Spinner';
 import moment               from 'moment';
 import Modal                from '../../components/UI/Modal/Modal';
@@ -25,6 +27,7 @@ class Plant extends Component {
 
     state = {
         plant: [],
+        dataForm: {},
         new : null,
         locations:[],
         date: moment(),
@@ -39,19 +42,17 @@ class Plant extends Component {
     };
     
     handleSave = () => {
-        console.log('saved', this.state.m.format('llll'));
+
         const date = this.state.m.format('YYYY-MM-DD HH:mm:ss');
 
         const data = this.state.plant.data[this.state.selectedData];
-        console.log('/plantdata/' + data.id);
-        console.log(date);
+
         axios.put('/plantdata/' + data.id, qs.stringify( {'time': date} ) )
         .then( response => {
             this.setState({ calander: false });
 
-            console.log(response);
             if (response.data.data) {
-                this.fetchPlants().then((response) => {
+                this.fetchPlant().then((response) => {
                     this.setState({
                         plant: response.data.data || [],
                     });
@@ -61,11 +62,6 @@ class Plant extends Component {
         }).catch( response => {
             // console.log(response);
         });
-
-
-
-        console.log(date, data);
-
     };
     
     openCalander = (id, datetime) => {
@@ -79,8 +75,7 @@ class Plant extends Component {
     
     
     
-    fetchPlants = () => {
-        console.log()
+    fetchPlant = () => {
         return axios.get('/plant/' + this.props.match.params.id + '?data=true');
     }
 
@@ -91,7 +86,7 @@ class Plant extends Component {
 
     componentDidMount() 
     {
-        axios.all([this.fetchPlants(), this.fetchLocations()])
+        axios.all([this.fetchPlant(), this.fetchLocations()])
         .then(axios.spread( (plant, locations) => {
 
             this.setState({
@@ -102,15 +97,7 @@ class Plant extends Component {
       
     }
 
-    onDatesChange = () => {
-        console.log('changed snd stuff');
-    }
-    onFocusChange = () => {
-        console.log('changed snd stuff');
-    }
-    checkListHandler = () => {
-        console.log('clicked the checklist');
-    }
+
 
     selectLocation = (e) => {
         const plant = {...this.state.plant};
@@ -125,7 +112,6 @@ class Plant extends Component {
             // console.log(response);
         });
 
-        console.log('location selected');
     }
 
 
@@ -154,15 +140,12 @@ class Plant extends Component {
             selectedData: selected,
             new: true
         });
-
-        console.log(this.state.plant.data[selected]);
     }
 
     deleteData = (id) => {
-        console.log(id);
         axios.delete('/plantdata/' + id)
         .then( response => {
-            
+            console.log(response);
 
         }).catch( response => {
             console.log(response);
@@ -172,6 +155,45 @@ class Plant extends Component {
     }
 
 
+
+    updateForm = (value) => {
+        console.log('updating form', value);
+        const newData = {
+            ...this.state.dataForm,
+            ...value
+        };
+        this.setState({dataForm: newData}, () => console.log(this.state));
+    }
+
+    submit = (e) => {
+        e.preventDefault();
+        let submit = false;
+
+        if (this.state.dataForm.data_id) {
+            submit = axios.put('/plantdata/'+ this.state.data_id, qs.stringify(this.state.dataForm));
+        } else {
+            const data = {...this.state.dataForm};
+            data.plant_id = this.state.plant.id;
+            submit = axios.post('/plantdata', qs.stringify(data));
+        }
+
+        if (submit) {
+            return submit.then( response => {
+                this.removeFormHandler();
+    
+                this.fetchPlant().then( (response) => {
+                    this.setState({
+                        plant: response.data.data || [],
+                    });
+                });
+            }).catch( response => {
+                console.log(response);
+            });
+
+        }
+
+        return false;
+    }
 
 
 
@@ -205,7 +227,7 @@ class Plant extends Component {
         if (this.state.calander) {
 
             calander = <Modal show="true" class_modifier="modal--date">
-                <button onClick={this.removeCalanderHandler}>x</button>
+                <button className="user-controls__button user-controls__button--remove-calander" onClick={this.removeCalanderHandler}></button>
                 <InputMoment
                     moment={this.state.m}
                     onChange={this.handleChange}
@@ -239,42 +261,52 @@ class Plant extends Component {
                 };
             }
 
+            form = <div className="single-plant__grid" style={{overflow:'hidden'}}>
+                <PlantdataForm label="Temperature"  change={ this.updateForm } data={data.temperature} />
+                <PlantdataForm label="Health"       change={ this.updateForm } data={data.health} />
+                <PlantdataForm label="Humidity"     change={ this.updateForm } data={data.humidity} />
+                <PlantdataForm label="Light hours"  change={ this.updateForm } data={data.light_hours} />
+                <PlantdataForm label="Height"       change={ this.updateForm } data={data.height} />
+                <PlantdataForm label="Lux"          change={ this.updateForm } data={data.lux} />
+                <PlantdataForm label="PH"           change={ this.updateForm } data={data.ph} />
+                <PlantdataSave label="Save"          click={this.submit}       customClass="save" />
+            </div>
 
 
-            form = <Modal show="true">
-                        <Plantdataform 
-                            removeForm =    {this.removeFormHandler}
-                            plant_id =      {this.state.plant.id}
-                            {...plantData}
-                        />
-                    </Modal>
+            // form = <Modal show="true">
+            //             <Plantdataform 
+            //                 removeForm =    {this.removeFormHandler}
+            //                 plant_id =      {this.state.plant.id}
+            //                 {...plantData}
+            //             />
+            //         </Modal>
         }
 
 
 
         // const age = moment.diff(moment(this.state.plant.created_at)).format("m[m] s[s]")
-        if (this.state.plant.data.length > 0) {
-            data = this.state.plant.data.slice(0,1)[0];
-            const recent_date = moment(data.time).format('DD MMM');
-            const data_date = moment(data.time).format('YYYY-MM-DD HH:mm:ss');
-            const data_id = data.id;
 
-            datapoints = (
-                <Aux>
-                    <time dateTime={data_date} onClick={() => this.openCalander(0, data_date)}>{recent_date}</time>
-                    <div className="single-plant__grid" style={{overflow:'hidden'}}>
-                        <Plantdata label="Temperature"  data={data.temperature} />
-                        <Plantdata label="Health"       data={data.health} />
-                        <Plantdata label="Humidity"     data={data.humidity} />
-                        <Plantdata label="Light hours"  data={data.light_hours} />
-                        <Plantdata label="Height"       data={data.height} />
-                        <Plantdata label="Lux"          data={data.lux} />
-                        <Plantdata label="PH"           data={data.ph} />
-                    </div>
-                </Aux>
-            );
+        // if (this.state.plant.data.length > 0) {
+        //     data = this.state.plant.data.slice(0,1)[0];
+        //     const recent_date = moment(data.time).format('DD MMM');
+        //     const data_date = moment(data.time).format('YYYY-MM-DD HH:mm:ss');
 
-        }
+        //     datapoints = (
+        //         <Aux>
+        //             <time dateTime={data_date} onClick={() => this.openCalander(0, data_date)}>{recent_date}</time>
+        //             <div className="single-plant__grid" style={{overflow:'hidden'}}>
+        //                 <Plantdata label="Temperature"  data={data.temperature} />
+        //                 <Plantdata label="Health"       data={data.health} />
+        //                 <Plantdata label="Humidity"     data={data.humidity} />
+        //                 <Plantdata label="Light hours"  data={data.light_hours} />
+        //                 <Plantdata label="Height"       data={data.height} />
+        //                 <Plantdata label="Lux"          data={data.lux} />
+        //                 <Plantdata label="PH"           data={data.ph} />
+        //             </div>
+        //         </Aux>
+        //     );
+
+        // }
 
         if (this.state.plant.data.length > 1) {
             data = this.state.plant.data.slice(1);
@@ -282,7 +314,6 @@ class Plant extends Component {
             otherDataPoints = data.map((d, i) => {
                 console.log(d);
                 const date = moment(d.time).format('DD MMM');
-                // const data_date2 = moment(data.time).format('YYYY-MM-DD HH:mm:ss');
 
                 return (
                     <Aux key={i}>
@@ -310,9 +341,12 @@ class Plant extends Component {
         return (
             <div className="container single-plant">
 
-                <Plantcontrols newItem={this.newPlantData} />
+                <Plantcontrols 
+                    newItem={this.newPlantData} 
+                    cancel={this.dataForm} 
+                    adButton={this.state.new}
+                    />
 
-                {form}
 
                 {calander}
 
@@ -323,9 +357,11 @@ class Plant extends Component {
                     {locationElements}
                 </select>
 
+                {form}
 
                 {datapoints}
                 <Plantdataheader />
+                <Separator type="plant" />
                 {otherDataPoints}
             </div>
         );
