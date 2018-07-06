@@ -1,5 +1,16 @@
 .plant-data-line {
     display:flex;
+    color: color(offwhite);
+    // padding: 10px 0;
+    border-radius: 20px;
+    &:hover {
+        cursor:pointer;
+    }
+}
+
+.plant-data-line--selected {
+    // background-color:green;
+    color:white;
 }
 
 .plant-data-line__header {
@@ -8,14 +19,15 @@
 
 .plant-data-line__data-point {
     font-weight:200;
-    color:color(offwhite);
+    color:inherit;
     flex-grow:1;
     flex-basis: 50px;
     text-align: center;
-
-    // border: 1px solid green;
+    padding-top:11px;
 }
-
+.plant-data-line__data-point--timecontainer {
+    padding:0;
+}
 .plant-data-line__button--update {
     background-image: url('/static/icons/iconmonstr-update-white.svg?ver2');
 }
@@ -33,4 +45,23 @@
     background-position: 50%;
     background-repeat:no-repeat;
     float:left;
+}
+
+.plant-data-line__data-point--time {
+    display: inline-block;
+    background: color(brightgreen);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding-top:7px;
+}
+.plant-data-line__data-point--day {
+    font-size: rem(12);
+    font-weight:600;
+    color: black;
+}
+.plant-data-line__data-point--month {
+    font-size: rem(12);
+    font-weight:600;
+    color: black;
 }

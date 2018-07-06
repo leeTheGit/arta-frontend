@@ -4,7 +4,7 @@ import React from 'react';
 const button = (props) => (
     <button 
         className={props.btnType}  
-        onClick={props.clicked}>
+        onClick={(e) => props.clicked(e)}>
 
         {props.children}
 

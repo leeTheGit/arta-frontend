@@ -1,7 +1,7 @@
 import React from 'react';
 
 const plantdataForm = (props) => {
-    
+    console.log(props);
     let rootClasses = ["single-plant__data"];
     rootClasses.push("single-plant__data-" + props.customClass);
 
@@ -15,11 +15,11 @@ const plantdataForm = (props) => {
     return (
         <div className={rootClasses.join(" ")}>
             <h3 className={h3Class.join(" ")}>{props.label}</h3>
-            <input type="text" className={pClass.join(" ")} onChange={ e => {
+            <input type="text" className={pClass.join(" ")} value={props.data} onChange={ e => {
                 const data = {};
                 data[stateKey] = e.target.value;
                 props.change( data )
-                }}>{props.data}</input>
+                }}></input>
         </div>
     );
 

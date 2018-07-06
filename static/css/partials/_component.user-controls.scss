@@ -20,29 +20,34 @@
 
     &:hover {
         cursor:pointer;
-
     }
-
+    &.deactive {
+        opacity:.2;
+        &:hover {
+            cursor:default;
+        }
+    }
 }
 
 .user-controls__button--new {
     background-color: color(brightgreen);
     background-image: url('/static/icons/plus-thin.svg');
-    &.deactive {
-        opacity:.2;
-    }
 }
 
 .user-controls__button--delete {
     background-color: color(orange);
     transform: rotate(45deg); /* Equal to rotateZ(45deg) */
     background-image: url('/static/icons/plus-thin.svg');
-    &.deactive {
-        opacity:.2;
-    }
 }
 
-.user-controls__button--remove-calander {
+.user-controls__button--update {
+    background-color: rgb(54, 133, 197);
+    background-image: url('/static/icons/iconmonstr-update-white.svg?ver2');
+}
+
+
+
+.user-controls__button--remove-calendar {
     background-color: color(red);
     transform: rotate(45deg); /* Equal to rotateZ(45deg) */
     background-image: url('/static/icons/plus-thin.svg');
