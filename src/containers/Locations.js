@@ -4,6 +4,8 @@ import Location             from '../components/Location/Location';
 import RoomNav              from '../components/Location/Roomnav';
 import axios                from 'axios';
 import qs                   from 'qs';
+import Select from 'react-select'
+
 import {
     SortableContainer, 
     arrayMove
@@ -30,17 +32,30 @@ import {
 
 const SortableList = SortableContainer(({items, clicked, rooms, roomSelect}) => {
 
+    
+    const locations = items.map((value, index) => {
+    //     const defaultValue = rooms.findIndex( room => {
+    //         console.log(room.value === value.room_id);
+    //         return room.value === value.room_id;
+    //     });
+    //     console.log(defaultValue);
+    //     console.log(rooms);
+    //     console.log(rooms[defaultValue]);
+        // const roomsSelect = <Select options={rooms} value={defaultValue}/>
+
+        return   <Location  key={`item-${index}`} 
+                            click={clicked} 
+                            roomSelect={roomSelect} 
+                            // roomsSelect={roomsSelect}
+                            index={index} 
+                            rooms={rooms} 
+                            value={value}
+                            locationId={value.id} />
+    });
+
     return (
         <ul>
-        {items.map((value, index) => (
-            <Location   key={`item-${index}`} 
-                        click={clicked} 
-                        roomSelect={roomSelect} 
-                        index={index} 
-                        rooms={rooms} 
-                        value={value}
-                        locationId={value.id} />
-        ))}
+            {locations}
         </ul>
     );
 });
@@ -69,7 +84,7 @@ class Locations extends Component {
         // }));
 
         this.fetchRooms().then(roomResponse => {
-
+            console.log(roomResponse.data.data);
             this.setState({rooms: roomResponse.data.data || []}, () => {
                 
                 if (!this.state.selectedRoom) return;
@@ -217,10 +232,21 @@ class Locations extends Component {
             )
         }
         
+        console.log(this.state.rooms);
+        let roomData = [];
+        if (this.state.rooms.length > 0 ) {
+            roomData = this.state.rooms.map( room => {
+                return {value: room.id, label: room.name};
+            });
+            console.log(roomData);
+        }
+
+
         const locations = <SortableList items           = {this.state.locations} 
                                         rooms           = {rooms}
                                         clicked         = {this.delete}
                                         onSortEnd       = {this.onSortEnd} 
+                                        // roomsSelect     = {roomsSelect}
                                         roomSelect      = {this.selectRoom}
                                         useDragHandle   = {true} 
                                         />
