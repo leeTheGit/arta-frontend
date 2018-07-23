@@ -9,34 +9,64 @@
     display:flex;
     align-items: center;
     position:relative;
+    color: black;
+    border-color:black;
+
+}
+
+.room--selected {
+    background: color(frank);
+    color: white;
+    border-color:white;
+
+}
+
+.room--new {
+    background: color(orange);
 }
 
 
 .room__p {
     font-family: $base-font-family;
-    color: black;
+    color:inherit;
     font-size: 20px;
+}
+.room__input {
+    font-family: $base-font-family;
+    color:color(lightgray);
+    font-size: 20px;
+}
+
+.room__save {
+    background: url('/static/icons/iconmonstr-check-mark-thin.svg');
+    background-repeat:no-repeat;
+    height:20px;
+    width:20px;
+    background-size:contain;
+    position: absolute;
+    right: 20px;
+    &:hover {
+        cursor:pointer;
+    }
 }
 
 .room__spacer {
     flex-grow:2;
 }
 
-.room__new {
-    background:cyan;
-}
 
 .room_temp {
     font-family: $base-font-family;
     font-size:rem(25);
     font-weight:200;
-    border:1px solid color(back);
+    border-style:solid;
+    border-color:inherit;
+    border-width: 1px;
     justify-content: center;
     padding: 10px;
     margin-right: 10px;
-
-
 }
+
 .room_humidity {
 
 }

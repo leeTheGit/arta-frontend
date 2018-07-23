@@ -1,12 +1,12 @@
 import React, {Component}   from 'react';
 import Plantdataheader      from '../../components/Plant/Plantdataheader';
-import Plantcontrols        from '../../components/Plant/Controls/Controls';
 import Plantdataline        from '../../components/Plant/Plantdataline';
 import PlantdataDate        from '../../components/Plant/PlantdataDate';
 import PlantdataForm        from '../../components/Plant/PlantdataForm';
 import PlantdataSave        from '../../components/Plant/PlantdataSave';
 import DeleteModal          from '../../components/Plant/Deletemodal';
 import Separator            from '../../components/UI/Separator/Separator';
+import Controls             from '../../components/Controls/Controls';
 import Spinner              from '../../components/UI/Spinner/Spinner';
 import moment               from 'moment';
 import Modal                from '../../components/UI/Modal/Modal';
@@ -35,12 +35,11 @@ class Plant extends Component {
         deleteModal  : false,
         selectedData : null,
     };
-    
+      
     componentDidMount() 
     {
         axios.all([this.fetchPlant(), this.fetchLocations()])
         .then(axios.spread( (plant, locations) => {
-
             this.setState({
                 plant: plant.data.data || [],
                 locations: locations.data.data || []
@@ -63,7 +62,7 @@ class Plant extends Component {
     // ********
     // CALENDAR
     opencalendar = (e, id, datetime) => {
-        console.log('opening calander');
+
         e.stopPropagation();
 
         this.setState({ 
@@ -105,15 +104,13 @@ class Plant extends Component {
 
 
     
-    selectRow= (e, selectedData) => {
+    selectRow = (e, selectedData) => {
         e.stopPropagation();
-        console.log('selecting row');
-
         this.setState({
             selectedData,
         });
-        
     }
+
     selectLocation = (e) => {
         const plant = {...this.state.plant};
         const value = e.target.value;
@@ -157,22 +154,20 @@ class Plant extends Component {
     editData = (e) => {
         e.stopPropagation();
 
-        console.log('editing item');
         const data = { ...this.state.plant.data[this.state.selectedData] }
 
         this.setState({
             update: true,
             dataForm: data,
         });
-
     }
 
-    updateData = (selected) => {
-        this.setState({
-            selectedData: selected,
-            new: true
-        });
-    }
+    // updateData = (selected) => {
+    //     this.setState({
+    //         selectedData: selected,
+    //         new: true
+    //     });
+    // }
 
     deleteData = () => {
 
@@ -198,13 +193,12 @@ class Plant extends Component {
     showDeleteModal = (e, id, index) => {
         e.stopPropagation();
 
-        console.log('setting show delete');
         this.setState({"deleteModal" : true });
     }
 
 
     updateForm = (value) => {
-        console.log('updating form', value);
+
         const newData = {
             ...this.state.dataForm,
             ...value
@@ -216,9 +210,11 @@ class Plant extends Component {
         e.preventDefault();
         let submit = false;
 
-        if (this.state.dataForm.data_id) {
-            submit = axios.put('/plantdata/'+ this.state.data_id, qs.stringify(this.state.dataForm));
+        if (this.state.dataForm.id) {
+
+            submit = axios.put('/plantdata/'+ this.state.dataForm.id, qs.stringify(this.state.dataForm));
         } else {
+
             const data = {...this.state.dataForm};
             data.plant_id = this.state.plant.id;
             submit = axios.post('/plantdata', qs.stringify(data));
@@ -309,9 +305,9 @@ class Plant extends Component {
         if (this.state.new || this.state.update) {
             console.log('RAHHHHHHHHHHHH!!!!!!!!!!!!!');
             let data = {}
-            // if (this.state.selectedData) { // then we're updating
+            if (this.state.selectedData) { // then we're updating
                 data = {...this.state.dataForm}
-            // }
+            }
             console.log(data);
             form = 
             <Modal show="true" remove={this.removeFormHandler}>
@@ -376,7 +372,7 @@ class Plant extends Component {
                     {locationElements}
                 </select>
 
-                <Plantcontrols 
+                <Controls 
                     newItem  = {this.newPlantData} 
                     editItem = {this.editData}
                     cancel   = {this.showDeleteModal} 

@@ -1,27 +1,29 @@
 import React, {Component}   from 'react';
-import UserControls         from '../components/User/Usercontrols/Usercontrols';
-import Button               from '../components/UI/Button/Button';
-import axios                from 'axios';
-import Aux                  from '../hoc/Aux';
-import qs                   from 'qs';
-import Modal                from '../components/UI/Modal/Modal';
-import DeleteModal          from '../components/Room/DeleteModal';
 import MessageModal         from '../components/Room/MessageModal';
+import DeleteModal          from '../components/Room/DeleteModal';
 import Roomdata             from '../components/Room/Roomdata';
+import Controls             from '../components/Controls/Controls';
+import Newroom              from '../components/Room/Newroom.js';
+// import Button               from '../components/UI/Button/Button';
 import moment               from 'moment';
+import axios                from 'axios';
+import Modal                from '../components/UI/Modal/Modal';
+import Room                 from '../components/Room/Room.js';
+import Aux                  from '../hoc/Aux';
+// import qs                   from 'qs';
 
 class Rooms extends Component {
 
     state = {
+        new             : null,
         rooms           : null,
         roomData        : [],
-        roomLocations   : [],
-        new             : null,
-        selectedRoom    : null,
-        showLocations   : false,
         showData        : false,
         deleteModal     : false,
         messageModal    : false,
+        selectedRoom    : null,
+        roomLocations   : [],
+        showLocations   : false,
     };
 
 
@@ -78,38 +80,52 @@ class Rooms extends Component {
         return Math.floor(Math.random() * Math.floor(max));
     }
       
-    newLocation = (e) => {
-        const state = {
-            status: 'new',
+    newRoom = (e) => {
+        e.stopPropagation();
+        const newRoom = {
             id: this.getId(100),
-            name: 'New room',
-        }
-        this.setState({new: state});
+            name: '',
+            status: 'new'
+        };
+
+        const rooms = [
+            newRoom,
+            ...this.state.rooms,
+        ];
+        this.setState({rooms: rooms, new: true});
+    }
+    selectRoom = (e, selectedRoom) => {
+        this.setState({
+            selectedRoom,
+            showLocations: false,
+            showData: false
+
+        });
     }
 
-    save = (e) => {
-        e.preventDefault();
-        const newRoom = { ...this.state.new };
-        axios.post('/room', qs.stringify(newRoom))
-            .then( response => {
-                console.log(response);
-                this.setState({new: null});
-                this.fetchRooms();            
-            }).catch( response => {
-                console.log(response);
-            });
-    }
+    // save = (e) => {
+    //     e.preventDefault();
+    //     const newRoom = { ...this.state.new };
+    //     axios.post('/room', qs.stringify(newRoom))
+    //         .then( response => {
+    //             console.log(response);
+    //             this.setState({new: null});
+    //             this.fetchRooms();            
+    //         }).catch( response => {
+    //             console.log(response);
+    //         });
+    // }
 
 
-    setName = (name) => {
-        const newRoom = {...this.state.new}
-        newRoom.name = name;
-        this.setState({new: newRoom})
-    }
+    // setName = (name) => {
+    //     const newRoom = {...this.state.new}
+    //     newRoom.name = name;
+    //     this.setState({new: newRoom})
+    // }
 
-    removeForm= () => {
-        this.setState({"new": null});
-    }
+    // removeForm= () => {
+    //     this.setState({"new": null});
+    // }
 
     deleteRoom = () => {
         const selected = this.state.selectedRoom;
@@ -125,9 +141,13 @@ class Rooms extends Component {
     }
 
 
-    showDeleteModal = (id, index) => {
-        this.setState({selectedRoom: index});
-        this.fetchRoomLocations(id, index).then((response) => {
+    showDeleteModal = () => {
+
+        const room = this.state.rooms[this.state.selectedRoom];
+        console.log(room);
+
+        this.fetchRoomLocations(room.id).then((response) => {
+            console.log(response);
             if (response.data.data.length > 0) {
                 this.setState({"messageModal" : true });
             } else {
@@ -170,6 +190,8 @@ class Rooms extends Component {
 
 
 
+    removeFormHandler = () => {
+    }
 
 
 
@@ -185,7 +207,6 @@ class Rooms extends Component {
         if (!this.state.rooms) {
             return (
                 <Aux>
-                    <UserControls newItem={this.newLocation}/>
                     <p>There are no rooms!!</p>
                 </Aux>
             )
@@ -220,17 +241,16 @@ class Rooms extends Component {
 
         let newRoom = null;
 
-        if (this.state.new) {
-            newRoom = (
-                <li className="room__new" key={this.state.new.id}>
-                    <input id={this.state.new.id} value={this.state.new.name} 
-                        onChange={(e) => {this.setName(e.target.value)}} /> 
-                    <button onClick={this.save}>Save</button>
-                    <Button btnType="new-user-form__remove" clicked={this.removeForm}></Button>
-
-                </li>
-            )
-        }
+        // if (this.state.new) {
+        //     newRoom = (
+        //         <li className="room__new" key={this.state.new.id}>
+        //             <input id={this.state.new.id} value={this.state.new.name} 
+        //                 onChange={(e) => {this.setName(e.target.value)}} /> 
+        //             <button onClick={this.save}>Save</button>
+        //             <Button btnType="new-user-form__remove" clicked={this.removeForm}></Button>
+        //         </li>
+        //     )
+        // }
 
         let roomLocations = null;
         if (this.state.roomLocations && this.state.showLocations) {
@@ -249,9 +269,8 @@ class Rooms extends Component {
         let roomData = null;
         if (this.state.roomData && this.state.showData) {
             roomData = this.state.roomData.map((data, index) => {
-                const date = moment(data.created_at).format('Do MMM');
+                const date = moment(data.time).format('Do MMM');
 
-                console.log(data);
                 return <Roomdata key            = {data.id} 
                                  id             = {data.id}  
                                  date           = {date}
@@ -263,18 +282,35 @@ class Rooms extends Component {
 
 
         const rooms = this.state.rooms.map((room,index) => {
+            const selectedClass = (this.state.selectedRoom === index) ? "room--selected" : "";
+
             return (
                 <Aux key={room.id}>
-                    <li className="room" key={room.id}>
-                        <p className="room__p">{room.name}</p>
-                        <div className="room__spacer"></div>
-                        <button onClick={() => this.showRoomData(room.id, index)}>Data</button>
-                        <button onClick={() => this.showLocations(room.id, index)}>Locations</button>
-                        {room.temperature && <div className="room_temp">{room.temperature}</div> }
-                        {room.humidity && <div className="room_temp">{room.humidity}</div> }
-                        <Button btnType="new-user-form__remove" clicked={() => this.showDeleteModal(room.id, index)}></Button>
+                    {room.status != 'new' 
+                    
+                    ?  <Room 
+                            id              = {room.id}
+                            name            = {room.name}
+                            index           = {index}
+                            class           = {selectedClass}
+                            select          = {this.selectRoom}
+                            humidity        = {room.humidity}
+                            temperature     = {room.temperature}
+                            showRoomData    = {this.showRoomData}
+                            showLocations   = {this.showLocations}
+                        />
 
-                    </li>
+                    : <Newroom 
+                        id              = {room.id}
+                        name            = {room.name}
+                        index           = {index}
+                        showDeleteModal = {this.showDeleteModal}
+                        fetch           = {this.fetchRooms}
+                        />
+                    }
+
+
+
                     { this.state.roomLocations && index === this.state.selectedRoom ? <ul className="room-locations">{roomLocations}</ul> : '' }
                     { this.state.roomData && index === this.state.selectedRoom ? <ul className="room-data">{roomData}</ul> : '' }
                 </Aux>
@@ -284,7 +320,14 @@ class Rooms extends Component {
 
         return (
             <div>
-                <UserControls newItem={this.newLocation}/>
+                <Controls 
+                    newItem  = {this.newRoom} 
+                    editItem = {this.editData}
+                    cancel   = {this.showDeleteModal} 
+                    adButton = {this.state.new}
+                    update   = {this.state.selectedRoom || '' }
+                    click    = {this.removeFormHandler}
+                />
                 {deleteModal}
                 {messageModal}
 
