@@ -1,7 +1,21 @@
-add foreign key on user_id in pantdata table
-have second person checking
-click location from room screen to go to location page
-✓ create api test to mimick a plant having data added over time while changing locations
+BUG:
+    health not working on plantdata
 
-limit/offset on get
-add new data for room
+
+FEATURE:
+
+    click location from room screen to go to location page
+
+    limit/offset on get
+        add load more support in frontend
+
+    add new data for room
+
+
+    have second person checking
+        create logic for check user in api
+
+
+DONE:
+    ✓ add foreign key on user_id in plantdata table
+    ✓ create api test to mimick a plant having data added over time while changing locations

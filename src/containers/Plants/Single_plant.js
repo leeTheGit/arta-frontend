@@ -1,11 +1,11 @@
 import React, {Component}   from 'react';
+import { connect }          from 'react-redux';
 import Plantdataheader      from '../../components/Plant/Plantdataheader';
-import Plantdataline        from '../../components/Plant/Plantdataline';
-import PlantdataDate        from '../../components/Plant/PlantdataDate';
 import PlantdataForm        from '../../components/Plant/PlantdataForm';
 import PlantdataSave        from '../../components/Plant/PlantdataSave';
 import DeleteModal          from '../../components/Plant/Deletemodal';
 import Separator            from '../../components/UI/Separator/Separator';
+import Plantdata            from '../../components/Plant/Plantdata';
 import Controls             from '../../components/Controls/Controls';
 import Spinner              from '../../components/UI/Spinner/Spinner';
 import moment               from 'moment';
@@ -13,9 +13,12 @@ import Modal                from '../../components/UI/Modal/Modal';
 import axios                from 'axios';
 import Aux                  from '../../hoc/Aux';
 import qs                   from 'qs';
-import Plantdata            from './plantdata';
+
+
 import Plantdataform        from './Plantdataform';
 import Plantdataoptions     from '../../components/Plant/Plantdataoptions';
+// import Plantdataline        from '../../components/Plant/Plantdataline';
+// import PlantdataDate        from '../../components/Plant/PlantdataDate';
 
 
 import InputMoment          from 'input-moment';
@@ -29,6 +32,7 @@ class Plant extends Component {
         date         : moment(),
         plant        : [],
         update       : false,
+        authUser     : null, // redux
         calendar     : false,
         dataForm     : {},
         locations    : [],
@@ -196,6 +200,28 @@ class Plant extends Component {
         this.setState({"deleteModal" : true });
     }
 
+    checkData = (user) => {
+        console.log(user);
+    }
+
+
+    checkHandler = (dataIndex) => {
+        const id = this.state.plant.data[dataIndex].id;
+        const userid = this.props.authUser.id;
+        
+        console.log(id, userid);
+        axios.put('/plantdata/' + id, qs.stringify( {'user_check': userid} ) )
+        .then( response => {
+            console.log(response);
+            if (response.data.data) {
+            }
+        }).catch( response => {
+            // console.log(response);
+        });
+
+    }
+
+
 
     updateForm = (value) => {
 
@@ -253,7 +279,6 @@ class Plant extends Component {
         }
 
         let datapoints = null;
-        let otherDataPoints = null;
 
         let data = [];
         const now = moment();
@@ -303,25 +328,24 @@ class Plant extends Component {
         let form = null;
 
         if (this.state.new || this.state.update) {
-            console.log('RAHHHHHHHHHHHH!!!!!!!!!!!!!');
+
             let data = {}
             if (this.state.selectedData) { // then we're updating
                 data = {...this.state.dataForm}
             }
-            console.log(data);
-            form = 
-            <Modal show="true" remove={this.removeFormHandler}>
-                <div className="single-plant__grid" style={{overflow:'hidden'}}>
-                    <PlantdataForm label="Temperature"  change={ this.updateForm } data={data.temperature || ''} />
-                    <PlantdataForm label="Health"       change={ this.updateForm } data={data.health || ''} />
-                    <PlantdataForm label="Humidity"     change={ this.updateForm } data={data.humidity || ''} />
-                    <PlantdataForm label="Light hours"  change={ this.updateForm } data={data.light_hours || ''} />
-                    <PlantdataForm label="Height"       change={ this.updateForm } data={data.height || ''} />
-                    <PlantdataForm label="Lux"          change={ this.updateForm } data={data.lux || ''} />
-                    <PlantdataForm label="PH"           change={ this.updateForm } data={data.ph || ''} />
-                    <PlantdataSave label="Save"         click={this.submit}        customClass="save" />
-                </div>
-            </Modal>
+
+            form =  <Modal show="true" remove={this.removeFormHandler}>
+                        <div className="single-plant__grid" style={{overflow:'hidden'}}>
+                            <PlantdataForm label="Temperature"  change={ this.updateForm } data={data.temperature   || ''} />
+                            <PlantdataForm label="Light hours"  change={ this.updateForm } data={data.light_hours   || ''} />
+                            <PlantdataForm label="Humidity"     change={ this.updateForm } data={data.humidity      || ''} />
+                            <PlantdataForm label="Health"       change={ this.updateForm } data={data.health        || ''} />
+                            <PlantdataForm label="Height"       change={ this.updateForm } data={data.height        || ''} />
+                            <PlantdataForm label="Lux"          change={ this.updateForm } data={data.lux           || ''} />
+                            <PlantdataForm label="PH"           change={ this.updateForm } data={data.ph            || ''} />
+                            <PlantdataSave label="Save"         click={this.submit}        customClass="save" />
+                        </div>
+                    </Modal>
 
         }
 
@@ -329,29 +353,30 @@ class Plant extends Component {
 
 
         if (this.state.plant.data.length > 1) {
-            data = this.state.plant.data.slice(1);
+            data = this.state.plant.data;
 
-            otherDataPoints = data.map((d, i) => {
-
-                const date = moment(d.time).format('YYYY-MM-DDTHH:mm:ss');
-                const month = moment(d.time).format('MMM');
-                const day = moment(d.time).format('DD');
+            datapoints = data.map((d, i) => {
+                console.log(d);
                 const selectedClass = (this.state.selectedData === i+1) ? "plant-data-line--selected" : "";
                 return (
                     <Aux key={i}>
-                        <ul key={i} className={"plant-data-line " + selectedClass} onClick={(e) => this.selectRow(e, i+1)} style={{overflow:'hidden'}}>
-                            <PlantdataDate customClass="" date={date} month={month} day={day} click={(e) => this.opencalendar(e, i+1, d.time)}/>
-                            <Plantdataline customClass="" data={d.temperature} />
-                            <Plantdataline customClass="" data={d.health} />
-                            <Plantdataline customClass="" data={d.humidity} />
-                            <Plantdataline customClass="" data={d.light_hours} />
-                            <Plantdataline customClass="" data={d.height} />
-                            <Plantdataline customClass="" data={d.lux} />
-                            <Plantdataline customClass="" data={d.ph} click={() => console.log('clicked')}/>
-                            {/* <Plantdataoptions customClass="" updateData={() => this.updateData(i+1)} deleteData={() => this.deleteData(d.id)} /> */}
-                        </ul>
+                        <Plantdata 
+                            checkHandler= {this.checkHandler}
+                            temperature = {d.temperature}
+                            light_hours = {d.light_hours}
+                            selectRow   = {this.selectRow}
+                            calendar    = {this.opencalendar}
+                            humidity    = {d.humidity}
+                            health      = {d.health}
+                            height      = {d.height}
+                            check       = {d.user_check}
+                            class       = {selectedClass}
+                            time        = {d.time}
+                            lux         = {d.lux}
+                            ph          = {d.ph}
+                            i           = {i}
+                        />
                         <Separator type="plant" />
-
                     </Aux>
                 )
             } );
@@ -383,13 +408,21 @@ class Plant extends Component {
                 
                 {form}
 
-                {datapoints}
-                <Plantdataheader />
+                <Plantdataheader 
+                    checkClick={this.checkData} 
+                />
                 <Separator type="plant" />
-                {otherDataPoints}
+                {datapoints}
             </div>
         );
     }
 }
 
-export default Plant;
+
+const mapStateToProps = state => {
+    return {
+        authUser: state.authUser
+    };
+}
+
+export default connect(mapStateToProps)(Plant);

@@ -1,5 +1,5 @@
 import React, {Component}   from 'react';
-import Plantcontrols        from '../../components/Plant/Controls/Controls';
+import Plantcontrols        from '../../components/Controls/Controls';
 import Plantform            from '../../components/Plantform/Plantform';
 import {Route}              from 'react-router-dom';
 import Button               from '../../components/UI/Button/Button';

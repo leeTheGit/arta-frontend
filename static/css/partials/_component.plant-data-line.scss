@@ -24,6 +24,18 @@
     flex-basis: 50px;
     text-align: center;
     padding-top:11px;
+
+    &.check {
+        background:cyan;
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    &:checked {
+        background:pink;
+    }
+
+
 }
 .plant-data-line__data-point--timecontainer {
     padding:0;

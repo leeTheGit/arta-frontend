@@ -9,7 +9,8 @@ class Layout extends Component {
     
     state = {
         drawerOpen: false,
-        isLoggedIn: false
+        isLoggedIn: false,
+        authUser: null
     };
 
 
@@ -25,18 +26,21 @@ class Layout extends Component {
         return React.Children.map(props.children, child => {
             return React.cloneElement(child, {
                 isLoggedIn: this.props.isLoggedIn
-                // login: this.loginHandler
             });
         });
     }
 
 
     render () {
+        console.log(this.props.authUser);
+        const username = this.props.authUser ? this.props.authUser.firstname : '';
         return (
             <Aux>
                 <Toolbar 
                     click={this.openDrawerHandler} 
-                    isLoggedIn={this.props.isLoggedIn} />
+                    isLoggedIn={this.props.isLoggedIn}
+                    username={username} 
+                />
                 {/* <SideDrawer show={this.state.drawerOpen} click={this.closeDrawerHandler}/> */}
 
                 <main className="">
@@ -50,7 +54,8 @@ class Layout extends Component {
 const mapStateToProps = state => {
     return {
         isLoggedIn: state.isLoggedIn,
-    }
+        authUser: state.authUser
+    };
 }
 
 export default connect(mapStateToProps)(Layout);

@@ -4,7 +4,7 @@ import Location             from '../components/Location/Location';
 import RoomNav              from '../components/Location/Roomnav';
 import axios                from 'axios';
 import qs                   from 'qs';
-import Select from 'react-select'
+// import Select               from 'react-select'
 
 import {
     SortableContainer, 

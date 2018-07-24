@@ -6,13 +6,14 @@ const plantdataheader = (props) => {
     return (
         <ul key={props.i} className="plant-data-line plant-data-line__header" style={{overflow:'hidden'}}>
             <Plantdataline customClass="" data="" />
-            <Plantdataline customClass="" data="Temperature" />
-            <Plantdataline customClass="" data="Health" />
-            <Plantdataline customClass="" data="Humidity" />
-            <Plantdataline customClass="" data="Light hours" />
-            <Plantdataline customClass="" data="Height" />
+            <Plantdataline customClass="" data="Temp" />
+            <Plantdataline customClass="" data="He" />
+            <Plantdataline customClass="" data="Hu" />
+            <Plantdataline customClass="" data="Li Hrs" />
+            <Plantdataline customClass="" data="Hei" />
             <Plantdataline customClass="" data="Lux" />
             <Plantdataline customClass="" data="Ph" />
+            <Plantdataline customClass="" data="Check" click={props.checkClick}/>
         </ul>
     )
 }

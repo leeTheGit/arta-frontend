@@ -1,5 +1,5 @@
 import React, {Component}   from 'react';
-import * as actionTypes     from '../../store/actions';
+import * as actionTypes     from '../../store/actions/actions';
 import { Redirect }         from 'react-router-dom';
 import { connect }          from 'react-redux';
 import Button               from '../../components/UI/Button/Button';
@@ -10,7 +10,8 @@ class Login extends Component {
     state = {
         username: '',
         password: '',
-        isLoggedIn: false
+        isLoggedIn: false,
+        loginError: false
     }
 
     componentDidMount() {
@@ -22,9 +23,14 @@ class Login extends Component {
             return <Redirect to="/plants" />;
         }
 
+        let error = null;
+        if (this.props.loginError) {
+            error = <h1>You did a log in error idiot</h1>;
+        }
+
         return (
             <div className="login bb">
-
+                {error}
                 <form className="login-form">
                     <div>
                         {/* <label>Username</label> */}
@@ -46,7 +52,8 @@ const mapStateToProps = state => {
     return {
         username: state.username,
         password: state.password,
-        isLoggedIn: state.isLoggedIn
+        isLoggedIn: state.isLoggedIn,
+        loginError: state.loginError
     };
 }
 
@@ -55,9 +62,9 @@ const mapDispatchToProps = dispatch => {
         loginHandler: (e, user, pass) => {
 
             e.preventDefault();
-            localStorage.setItem('username', user);
-            localStorage.setItem('password', pass);
-            dispatch({type: actionTypes.LOGIN, login: {username:user, password:pass}});
+            // localStorage.setItem('username', user);
+            // localStorage.setItem('password', pass);
+            dispatch(actionTypes.login({username: user, password: pass}));
         }
     }
 }

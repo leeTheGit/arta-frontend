@@ -95,11 +95,15 @@ class Rooms extends Component {
         this.setState({rooms: rooms, new: true});
     }
     selectRoom = (e, selectedRoom) => {
+        console.log(selectedRoom);
+        let selectValue = selectedRoom;
+        if (selectedRoom === this.state.selectedRoom) {
+            selectValue = null;
+        }
         this.setState({
-            selectedRoom,
+            selectedRoom: selectValue,
             showLocations: false,
             showData: false
-
         });
     }
 
@@ -227,12 +231,17 @@ class Rooms extends Component {
 
         let deleteModal = null;
         if (this.state.deleteModal) {
+            const selected = this.state.selectedRoom;
+            const name = this.state.rooms[selected].name;
+    
+            const message = "Are you sure you want to delete " + name;
             deleteModal = <Modal  show={this.state.deleteModal} 
                                 remove={this.removeModal}>
                             <DeleteModal 
                                 ok={this.deleteRoom} 
                                 cancel={this.removeModal}
-                                username={this.state.deleteName}
+                                title="Delete"
+                                message={message}
                                 />
                         </Modal>
         }
@@ -325,7 +334,7 @@ class Rooms extends Component {
                     editItem = {this.editData}
                     cancel   = {this.showDeleteModal} 
                     adButton = {this.state.new}
-                    update   = {this.state.selectedRoom || '' }
+                    update   = {this.state.selectedRoom != null || '' }
                     click    = {this.removeFormHandler}
                 />
                 {deleteModal}

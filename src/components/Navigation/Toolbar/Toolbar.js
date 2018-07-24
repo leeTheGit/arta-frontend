@@ -11,7 +11,7 @@ const toolbar = (props) => (
         <header className="Toolbar">
             <DrawerToggle click={props.click}/>
             <nav className="Toolbar-desktopOnly">
-                <NavigationItems isLoggedIn={props.isLoggedIn} />
+                <NavigationItems isLoggedIn={props.isLoggedIn} username={props.username}/>
             </nav>
         </header>
         <Separator type="header"/>
