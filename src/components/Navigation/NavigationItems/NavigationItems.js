@@ -13,10 +13,7 @@ const navigationItems = (props) => {
             <NavigationItem link="/user">Users</NavigationItem>
             <NavigationItem link="/rooms">Rooms</NavigationItem>
             <NavigationItem link="/locations">Locations</NavigationItem>
-            {props.isLoggedIn 
-                ? <NavigationItem klass="auth" link_class="auth" link="/logout">Logout {username}</NavigationItem>
-                : <NavigationItem klass="auth" link_class="auth" link="/login">Login</NavigationItem>
-            }
+            {props.isLoggedIn && <NavigationItem klass="auth" link_class="auth" link="/logout">Logout {username}</NavigationItem>}
         </ul>
     )
 };

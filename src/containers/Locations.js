@@ -84,7 +84,7 @@ class Locations extends Component {
         // }));
 
         this.fetchRooms().then(roomResponse => {
-            console.log(roomResponse.data.data);
+            // console.log(roomResponse.data.data);
             this.setState({rooms: roomResponse.data.data || []}, () => {
                 
                 if (!this.state.selectedRoom) return;
@@ -152,7 +152,7 @@ class Locations extends Component {
             // console.log(response);
         });
 
-        console.log('location selected');
+        // console.log('location selected');
     }
 
     getId(max) {
@@ -232,13 +232,13 @@ class Locations extends Component {
             )
         }
         
-        console.log(this.state.rooms);
+        // console.log(this.state.rooms);
         let roomData = [];
         if (this.state.rooms.length > 0 ) {
             roomData = this.state.rooms.map( room => {
                 return {value: room.id, label: room.name};
             });
-            console.log(roomData);
+            // console.log(roomData);
         }
 
 

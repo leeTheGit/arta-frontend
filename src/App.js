@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Route, Switch }    from 'react-router-dom';
+import { Route, Switch, withRouter }    from 'react-router-dom';
+import EnsureLoggedInContainer  from './containers/Private';
 import * as actionTypes     from './store/actions/actions';
+import { connect }          from 'react-redux';
 import Locations            from './containers/Locations';
 import Layout               from './components/Layout/Layout';
 import Logout               from './containers/Login/Logout/Logout';
@@ -21,6 +23,7 @@ const username = localStorage.getItem('username');
 const password = localStorage.getItem('password');
 let authUser = localStorage.getItem('authUser');
 
+
 axios.interceptors.response.use(function (response) {
     if (response.status === 500) {
         return Promise.reject(response);
@@ -36,9 +39,10 @@ if (username && password) {
     if (authUser) {
         authUser = JSON.parse(authUser);
     }
-    console.log(authUser);
+    
     store.dispatch({type: actionTypes.LOGIN_ON_REFRESH, user: authUser});
 
+    
     window.axios.myInterceptor = axios.interceptors.request.use( config => {
         config['withCredentials'] = true;
         config['auth'] = { username, password };
@@ -68,19 +72,28 @@ function axiosListener() {
 
 
 class App extends Component {
+
+    state = {
+        isLoggedIn : false
+    };
+
     render() {
+
         return (
             <div>
                 <Layout>
                     <Switch>
-                        <Route path="/" exact       component={Home} />
-                        <Route path="/user"        component={Users} />
-                        <Route path="/plants"       component={Plants} />
-                        <Route path="/plant/:id"    component={Plant} />
-                        <Route path="/Rooms"        component={Rooms} />
-                        <Route path="/Locations"    component={Locations} />
                         <Route path="/login"        component={Login} />
                         <Route path="/Logout"       component={Logout} />
+                        
+                        <EnsureLoggedInContainer>
+                            <Route path="/" exact       component={Home} />
+                            <Route path="/user"         component={Users}/>
+                            <Route path="/plants"       component={Plants}/>
+                            <Route path="/plant/:id"    component={Plant} />
+                            <Route path="/Rooms"        component={Rooms} />
+                            <Route path="/Locations"    component={Locations} />
+                        </EnsureLoggedInContainer>
                     </Switch>
                 </Layout>
             </div>
@@ -88,4 +101,10 @@ class App extends Component {
     }
 }
 
-export default App;
+const mapStateToProps = state => {
+    return {
+        isLoggedIn: state.isLoggedIn
+    };
+}
+export default withRouter(connect(mapStateToProps)(App));
+// export default  App;

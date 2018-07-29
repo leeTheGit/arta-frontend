@@ -109,6 +109,8 @@ class Plant extends Component {
 
     
     selectRow = (e, selectedData) => {
+        console.log('selecting row');
+        console.log(selectedData);
         e.stopPropagation();
         this.setState({
             selectedData,
@@ -159,7 +161,7 @@ class Plant extends Component {
         e.stopPropagation();
 
         const data = { ...this.state.plant.data[this.state.selectedData] }
-
+        console.log(data);
         this.setState({
             update: true,
             dataForm: data,
@@ -330,10 +332,10 @@ class Plant extends Component {
         if (this.state.new || this.state.update) {
 
             let data = {}
-            if (this.state.selectedData) { // then we're updating
+            if (this.state.selectedData != null) { // then we're updating
                 data = {...this.state.dataForm}
             }
-
+            console.log(data);
             form =  <Modal show="true" remove={this.removeFormHandler}>
                         <div className="single-plant__grid" style={{overflow:'hidden'}}>
                             <PlantdataForm label="Temperature"  change={ this.updateForm } data={data.temperature   || ''} />
@@ -356,8 +358,8 @@ class Plant extends Component {
             data = this.state.plant.data;
 
             datapoints = data.map((d, i) => {
-                console.log(d);
-                const selectedClass = (this.state.selectedData === i+1) ? "plant-data-line--selected" : "";
+
+                const selectedClass = (this.state.selectedData === i) ? "plant-data-line--selected" : "";
                 return (
                     <Aux key={i}>
                         <Plantdata 
@@ -402,7 +404,7 @@ class Plant extends Component {
                     editItem = {this.editData}
                     cancel   = {this.showDeleteModal} 
                     adButton = {this.state.new}
-                    update   = {this.state.selectedData || '' }
+                    update   = {this.state.selectedData != null || '' }
                     click    = {this.removeFormHandler}
                 />
                 

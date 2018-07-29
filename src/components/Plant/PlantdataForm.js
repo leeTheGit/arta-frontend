@@ -11,7 +11,7 @@ const plantdataForm = (props) => {
     let pClass = ["single-plant__data-point"];
     pClass.push("single-plant__data-point-" + props.customClass);
 
-    const stateKey = props.label.toLowerCase();
+    const stateKey = props.label.toLowerCase().replace(' ', '_');
     return (
         <div className={rootClasses.join(" ")}>
             <h3 className={h3Class.join(" ")}>{props.label}</h3>

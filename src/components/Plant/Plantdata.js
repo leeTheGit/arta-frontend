@@ -10,7 +10,7 @@ const plantdata = (props) => {
     const check = (props.check) ? "checked" : "check";
 
     return (
-        <ul key={props.i} className={"plant-data-line " + props.class} onClick={(e) => props.selectRow(e, props.i+1)} style={{overflow:'hidden'}}>
+        <ul key={props.i} className={"plant-data-line " + props.class} onClick={(e) => props.selectRow(e, props.i)} style={{overflow:'hidden'}}>
             <PlantdataDate customClass="" date={date} month={month} day={day} click={(e) => props.calendar(e, props.i+1, props.time)}/>
             <Plantdataline customClass="" data={props.temperature} />
             <Plantdataline customClass="" data={props.health} />
