@@ -24,15 +24,19 @@
     flex-basis: 50px;
     text-align: center;
     padding-top:11px;
+    background-size:initial;
+    background-repeat:no-repeat;
+    background-position: center;
 
     &.check {
-        background:cyan;
+        // background:cyan;
+        background-image: url('/static/icons/iconmonstr-check-mark-17.svg');
         &:hover {
             cursor: pointer;
         }
     }
-    &:checked {
-        background:pink;
+    &.checked {
+        background-image: url('/static/icons/iconmonstr-check-mark-18.svg');
     }
 
 

@@ -3,8 +3,6 @@ BUG:
     allow remove new room form (deselect already selected room)
 
 FEATURE:
-    have second person checking
-        create logic for check user in api
 
     add new data for room
 

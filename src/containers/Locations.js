@@ -1,5 +1,5 @@
 import React, {Component}   from 'react';
-import UserControls         from '../components/User/Usercontrols/Usercontrols';
+// import UserControls         from '../components/User/Usercontrols/Usercontrols';
 import Location             from '../components/Location/Location';
 import RoomNav              from '../components/Location/Roomnav';
 import axios                from 'axios';
@@ -254,7 +254,7 @@ class Locations extends Component {
         return (
             
             <div>
-                <UserControls newItem={this.newLocation}/>
+                {/* <UserControls newItem={this.newLocation}/> */}
                 <RoomNav rooms={this.state.rooms} select={(e, index) => this.selectRoomLocations(e, index)} selected={this.state.selectedRoom} />
                 <div className="u-margin-top-60">
                     {newLocation}

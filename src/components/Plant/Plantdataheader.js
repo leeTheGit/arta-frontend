@@ -13,7 +13,7 @@ const plantdataheader = (props) => {
             <Plantdataline customClass="" data="Hei" />
             <Plantdataline customClass="" data="Lux" />
             <Plantdataline customClass="" data="Ph" />
-            <Plantdataline customClass="" data="Check" click={props.checkClick}/>
+            <Plantdataline customClass="" data="" />
         </ul>
     )
 }

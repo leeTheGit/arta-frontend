@@ -1,11 +1,13 @@
 import React, {Component}   from 'react';
-import axios                from 'axios';
-import qs                   from 'qs';
-import User                 from '../../components/User/User';
-import Usercontrols         from '../../components/User/Usercontrols/Usercontrols';
 import NewUserForm          from '../../components/User/Newuserform/Newuserform';
-import Modal                from '../../components/UI/Modal/Modal';
 import DeleteModal          from '../../components/User/Deletemodal/Deletemodal';
+import Usersearch           from '../../components/User/Usercontrols/Usersearch';
+import Controls             from '../../components/Controls/Controls';
+import Modal                from '../../components/UI/Modal/Modal';
+import axios                from 'axios';
+import User                 from '../../components/User/User';
+import qs                   from 'qs';
+
 
 
 class Users extends Component {
@@ -14,12 +16,12 @@ class Users extends Component {
     state = {
         users: [],
         groups: [],
-        newUserData: {},
+        search: '',
         newUser: false,
-        deleteModal: false,
         deleteId: null,
         deleteName: null,
-        search: ''
+        deleteModal: false,
+        newUserData: {},
     }
 
     componentDidMount () {
@@ -29,16 +31,21 @@ class Users extends Component {
     fetchUsers = () => {
         axios.get('/user')
             .then( response => {
+                console.log(response);
                 if (response.data) {
-                    this.setState({users:response.data.data});
+                    let data = response.data.data;
+                    if (!Array.isArray(data)) {
+                        data = [data];
+                    }
+                    this.setState({users:data});
                 }
         }).catch( response => {
             console.log(response);
         });
-
     }
 
     removeFormHandler = () => {
+        console.log('new user is false as well!!!');
         this.setState({newUser:false})
     }
 
@@ -85,7 +92,7 @@ class Users extends Component {
     }
                 
     deleteUserHandler = () => {
-
+        console.log('deleee user handler??');
         axios.delete('/user/' + this.state.deleteId)
         .then( response => {
             
@@ -103,8 +110,12 @@ class Users extends Component {
 
     }
 
-    newUserHandler = () => {
-        this.setState({newUser: true});
+    newUserHandler = (e) => {
+        e.stopPropagation();
+        console.log('new user is true');
+        this.setState({newUser: true}, () => {
+            console.log(this.state);
+        });
     }
 
     showModal = (userid, username) => {
@@ -127,10 +138,11 @@ class Users extends Component {
 
 
     render() {
-
+        console.log('rendering users');
         let newUserForm = null;
-        
+        console.log(this.state);
         if (this.state.newUser) {
+            console.log('yeah new user form');
             newUserForm = <Modal show="true">
                             <NewUserForm 
                                 removeForm ={this.removeFormHandler}
@@ -154,32 +166,46 @@ class Users extends Component {
         }
 
 
-        const users = this.state.users.filter((user) => {
-            return  this.state.search === '' || 
-                    user.firstname.indexOf(this.state.search) !== -1 ||
-                    user.lastname.indexOf(this.state.search) !== -1 ||
-                    user.username.indexOf(this.state.search) !== -1;
-        }).map(user => { 
-            return (
-                <User   key         = {user.id} 
-                        userid      = {user.id}
-                        firstname   = {user.firstname}
-                        lastname    = {user.lastname}
-                        username    = {user.username}
-                        delete      = {this.showModal}
-                        email       = {user.email}
-                        group       = {user.groupname}
-                />
-            );
-        });
+        let users = null;
+        console.log(this.state.users);
+        if (this.state.users) {
+            users = this.state.users.filter((user) => {
+                return  this.state.search === '' || 
+                        user.firstname.indexOf(this.state.search) !== -1 ||
+                        user.lastname.indexOf(this.state.search) !== -1 ||
+                        user.username.indexOf(this.state.search) !== -1;
+            }).map(user => { 
+                return (
+                    <User   key         = {user.id} 
+                            userid      = {user.id}
+                            firstname   = {user.firstname}
+                            lastname    = {user.lastname}
+                            username    = {user.username}
+                            delete      = {this.showModal}
+                            email       = {user.email}
+                            group       = {user.groupname}
+                    />
+                );
+            });
+        }
 
 
 
 
         return (
             <div className="Users">
-                <Usercontrols 
-                    newItem={this.newUserHandler}
+                
+                <Controls 
+                    newItem  = {this.newUserHandler} 
+                    editItem = {this.editData}
+                    cancel   = {this.showDeleteModal} 
+                    adButton = {this.state.new}
+                    update   = {this.state.selectedData != null || '' }
+                    click    = {this.removeFormHandler}
+                />
+
+
+                <Usersearch 
                     updateSearch={this.onSearchChange}
                     clearSearch={this.clearSearch}
                     search={this.state.search}
