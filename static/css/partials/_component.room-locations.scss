@@ -1,15 +1,29 @@
 .room-location {
-
+    margin-bottom:10px;
 }
 
 .room-location__item {
-    background: color(orange);
-    width: 70%;
+    position:relative;
+    width: 75%;
     margin: auto;
-    margin-bottom: 10px;
     padding: 10px;
     text-align: center;
     display:flex;
+    border-bottom: 1px solid #262729;
+    &:after {
+        content: " ";
+        position: absolute;
+        z-index: -1;
+        background-color: black;
+        height: 1px;
+        left: 0;
+        right: 0;
+        bottom: 0px;
+    }
+
+    &:hover {
+        cursor:pointer;
+    }
 }
 
 .room-location__p {

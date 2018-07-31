@@ -25,11 +25,14 @@ let authUser = localStorage.getItem('authUser');
 
 
 axios.interceptors.response.use(function (response) {
+    console.log(response);
     if (response.status === 500) {
         return Promise.reject(response);
     }
+
     return response;
 }, function (error) {
+    console.log(error);
     return Promise.reject(error);
 });
 

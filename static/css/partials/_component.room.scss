@@ -11,18 +11,23 @@
     position:relative;
     color: black;
     border-color:black;
-
+    &:hover {
+        cursor:pointer;
+    }
 }
 
+
+
 .room--selected {
-    background: color(frank);
+    background-color: transparent;
     color: white;
     border-color:white;
 
 }
 
 .room--new {
-    background: color(orange);
+    // background: color(orange);
+    background: none;
 }
 
 
@@ -38,7 +43,7 @@
 }
 
 .room__save {
-    background: url('/static/icons/iconmonstr-check-mark-thin.svg');
+    background: url('/static/icons/iconmonstr-check-mark-thin-white.svg');
     background-repeat:no-repeat;
     height:20px;
     width:20px;
@@ -50,11 +55,11 @@
     }
 }
 
-.room__spacer {
-    flex-grow:2;
+.room__button {
+    &:hover {
+        color:white;
+    }
 }
-
-
 .room_temp {
     font-family: $base-font-family;
     font-size:rem(25);

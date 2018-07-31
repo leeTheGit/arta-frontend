@@ -10,12 +10,13 @@ import axios                from 'axios';
 import Modal                from '../components/UI/Modal/Modal';
 import Room                 from '../components/Room/Room.js';
 import Aux                  from '../hoc/Aux';
-// import qs                   from 'qs';
+import qs                   from 'qs';
+import {Link}               from 'react-router-dom';
 
 class Rooms extends Component {
 
     state = {
-        new             : null,
+        new             : null, // show new room form
         rooms           : null,
         roomData        : [],
         showData        : false,
@@ -92,10 +93,14 @@ class Rooms extends Component {
             newRoom,
             ...this.state.rooms,
         ];
-        this.setState({rooms: rooms, new: true});
+        this.setState({ 
+            rooms: rooms, 
+            new: true,
+            selectedRoom: 0
+        });
     }
     selectRoom = (e, selectedRoom) => {
-        console.log(selectedRoom);
+
         let selectValue = selectedRoom;
         if (selectedRoom === this.state.selectedRoom) {
             selectValue = null;
@@ -107,33 +112,11 @@ class Rooms extends Component {
         });
     }
 
-    // save = (e) => {
-    //     e.preventDefault();
-    //     const newRoom = { ...this.state.new };
-    //     axios.post('/room', qs.stringify(newRoom))
-    //         .then( response => {
-    //             console.log(response);
-    //             this.setState({new: null});
-    //             this.fetchRooms();            
-    //         }).catch( response => {
-    //             console.log(response);
-    //         });
-    // }
-
-
-    // setName = (name) => {
-    //     const newRoom = {...this.state.new}
-    //     newRoom.name = name;
-    //     this.setState({new: newRoom})
-    // }
-
-    // removeForm= () => {
-    //     this.setState({"new": null});
-    // }
 
     deleteRoom = () => {
         const selected = this.state.selectedRoom;
         const roomid = this.state.rooms[selected].id;
+
         axios.delete('/room/' + roomid)
             .then( response => {
                 this.setState({new: null});
@@ -144,14 +127,18 @@ class Rooms extends Component {
             });
     }
 
+    removeNewRoom = () => {
+        let rooms  = [...this.state.rooms];
+        rooms.splice(0,1);
+        this.setState({rooms, selectedRoom: null, new: null});
+    }
 
     showDeleteModal = () => {
 
         const room = this.state.rooms[this.state.selectedRoom];
-        console.log(room);
 
         this.fetchRoomLocations(room.id).then((response) => {
-            console.log(response);
+
             if (response.data.data.length > 0) {
                 this.setState({"messageModal" : true });
             } else {
@@ -191,13 +178,6 @@ class Rooms extends Component {
         });
 
     }
-
-
-
-    removeFormHandler = () => {
-    }
-
-
 
 
 
@@ -243,24 +223,18 @@ class Rooms extends Component {
 
         let newRoom = null;
 
-        // if (this.state.new) {
-        //     newRoom = (
-        //         <li className="room__new" key={this.state.new.id}>
-        //             <input id={this.state.new.id} value={this.state.new.name} 
-        //                 onChange={(e) => {this.setName(e.target.value)}} /> 
-        //             <button onClick={this.save}>Save</button>
-        //             <Button btnType="new-user-form__remove" clicked={this.removeForm}></Button>
-        //         </li>
-        //     )
-        // }
 
         let roomLocations = null;
         if (this.state.roomLocations && this.state.showLocations) {
             roomLocations = this.state.roomLocations.map((location, index) => {
+                console.log(location);
+                const linkAddr = "/locations?room=" + location.room_id;
                 return (
-                    <li key={location.id} className="room-location__item">
-                        <p className="room-location__p" id={location.id}>{location.name}</p>
-                    </li>
+                    <Link to={linkAddr}>
+                        <li key={location.id} className="room-location__item">
+                            <p className="room-location__p" id={location.id}>{location.name}</p>
+                        </li>
+                    </Link>
                 )
             });
         }
@@ -316,22 +290,26 @@ class Rooms extends Component {
 
 
 
-                        { this.state.roomLocations && index === this.state.selectedRoom ? <ul className="room-locations">{roomLocations}</ul> : '' }
+                        { this.state.roomLocations && index === this.state.selectedRoom ? <ul className="room-location">{roomLocations}</ul> : '' }
                         { this.state.roomData && index === this.state.selectedRoom ? <ul className="room-data">{roomData}</ul> : '' }
                     </Aux>
                 )
             });
         }
 
+
+
+        const controlCancelFunction = this.state.new ? this.removeNewRoom: this.showDeleteModal;
+
         return (
             <div>
                 <Controls 
                     newItem  = {this.newRoom} 
                     editItem = {this.editData}
-                    cancel   = {this.showDeleteModal} 
+                    cancel   = {controlCancelFunction} 
                     adButton = {this.state.new}
                     update   = {this.state.selectedRoom != null || '' }
-                    click    = {this.removeFormHandler}
+                    click    = {() => {}}
                 />
                 {deleteModal}
                 {messageModal}

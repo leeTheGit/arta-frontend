@@ -1,15 +1,22 @@
 BUG:
 
-    allow remove new room form (deselect already selected room)
 
 FEATURE:
+
+    location page - click on location should show plants
 
     JWT tokens
     add new data for room
 
-    click location from room screen to go to location page
+
+    add/change pin/password for user
 
     limit/offset on get
         add load more support in frontend
 
-
+    HOME page
+        count of all plants
+        current room temperatures
+        graph af age distribution of plants
+        current weather
+        

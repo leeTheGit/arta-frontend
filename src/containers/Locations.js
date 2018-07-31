@@ -1,5 +1,4 @@
 import React, {Component}   from 'react';
-// import UserControls         from '../components/User/Usercontrols/Usercontrols';
 import Location             from '../components/Location/Location';
 import RoomNav              from '../components/Location/Roomnav';
 import axios                from 'axios';
@@ -68,12 +67,18 @@ class Locations extends Component {
         locations: [],
         rooms: [],
         new : null,
-        selectedRoom: null
+        selectedRoom: null,
     };
 
 
     componentDidMount() 
     {
+        const query = qs.parse(this.props.location.search, {
+            ignoreQueryPrefix: true
+        });
+
+
+
         // axios.all([this.fetchLocations(), this.fetchRooms()])
         // .then(axios.spread( (locations, rooms) => {
         //     console.log(rooms, locations);
@@ -84,19 +89,32 @@ class Locations extends Component {
         // }));
 
         this.fetchRooms().then(roomResponse => {
-            // console.log(roomResponse.data.data);
-            this.setState({rooms: roomResponse.data.data || []}, () => {
+            let selectedRoom = null;
+
+            if (query.room) {
+                const index = roomResponse.data.data.findIndex(x => x.id === query.room);
+                if (index > -1) {
+                    selectedRoom = index;
+                }
+            }
+
+            this.setState({
+                rooms: roomResponse.data.data || [], 
+                ...query,
+                selectedRoom,
+                
+            }, () => {
+
                 
                 if (!this.state.selectedRoom) return;
 
                 this.fetchLocations().then( locResponse => {
 
                     this.setState({
-                        locations: locResponse.data.data || []
+                        locations: locResponse.data.data || [],
                     });
                 });
             });
-
         })
     }
 

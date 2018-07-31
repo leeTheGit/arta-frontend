@@ -10,10 +10,21 @@ class Newroom extends Component {
         name : this.props.name,
     }
 
+    componentDidMount(){
+        this.nameInput.focus(); 
+     }
+     
 
-    save = () => {
+    save = (e) => {
+        e.preventDefault();
         console.log('saving');
         const newRoom = { ...this.state };
+        
+        if (newRoom.name === "") {
+            console.log('returning');
+            return;
+        }
+        console.log('saving new room');
         axios.post('/room', qs.stringify(newRoom))
             .then( response => {
                 this.props.fetch();
@@ -31,9 +42,10 @@ class Newroom extends Component {
     render() {
         return (
             <li className="room room--new" key={this.props.id}>
-                <input type="text" className="room__input" value={this.state.name} placeholder="enter a name..." onChange={(e) => {this.setName(e.target.value)}}/>
-                <div className="room__spacer"></div>
-                <Button btnType="room__save" clicked={() => this.save()}></Button>
+                <form className="room__form" onSubmit={(e) => this.save(e)}>
+                    <input ref={(input) => { this.nameInput = input; }} type="text" className="room__input" value={this.state.name} placeholder="enter a name..." onChange={(e) => {this.setName(e.target.value)}}/>
+                    <Button btnType="room__save" clicked={(e) => this.save(e)}></Button>
+                </form>
             </li>
         )
     }
