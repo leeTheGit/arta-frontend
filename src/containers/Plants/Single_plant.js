@@ -113,6 +113,7 @@ class Plant extends Component {
 
         this.setState({
             new         : true,
+            dataForm    : {},
             selectedData: null,
         });
     }
@@ -191,7 +192,7 @@ class Plant extends Component {
 
 
     updateForm = (value) => {
-
+        console.log('in the update form');
         const newData = {
             ...this.state.dataForm,
             ...value
@@ -318,10 +319,9 @@ class Plant extends Component {
 
 
         if (this.state.new || this.state.update) {
-            let data = {}
-            if (this.state.selectedData != null) { // then we're updating
-                data = {...this.state.dataForm}
-            }
+            
+            const data = {...this.state.dataForm}
+            
             form =  <Modal show="true" remove={this.removeFormHandler}>
                         <PlantdataForm {...data} click={this.submit} change={this.updateForm} />
                     </Modal>

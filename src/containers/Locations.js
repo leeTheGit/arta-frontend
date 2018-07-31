@@ -64,10 +64,10 @@ const SortableList = SortableContainer(({items, clicked, rooms, roomSelect}) => 
 class Locations extends Component {
 
     state = {
-        locations: [],
-        rooms: [],
-        new : null,
-        selectedRoom: null,
+        selectedRoom:   null,
+        locations:      [],
+        rooms:          [],
+        new :           null,
     };
 
 

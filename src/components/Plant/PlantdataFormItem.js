@@ -26,8 +26,10 @@ class PlantdataFormItem extends Component {
                 <input type="text" className={pClass.join(" ")} value={this.props.data} onChange={ e => {
                     const value = e.target.value;
                     this.setState({data: value}, () => {
+                        console.log('doing a change!!!');
                         const data = {};
                         data[stateKey] = value;
+                        console.log(data);
                         this.props.change( data )
                     });
                 }}></input>

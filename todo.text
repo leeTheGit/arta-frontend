@@ -15,8 +15,11 @@ FEATURE:
         add load more support in frontend
 
     HOME page
+        checking status
         count of all plants
         current room temperatures
         graph af age distribution of plants
         current weather
-        
+
+Abstract:
+    D3 and react
