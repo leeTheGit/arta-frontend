@@ -5,6 +5,7 @@ import PlantdataForm        from '../../components/Plant/PlantdataForm';
 import Separator            from '../../components/UI/Separator/Separator';
 import Plantdata            from '../../components/Plant/Plantdata';
 import Controls             from '../../components/Controls/Controls';
+import Calendar             from '../../components/Calendar/Calendar';
 import Spinner              from '../../components/UI/Spinner/Spinner';
 import moment               from 'moment';
 import Choice               from '../../components/Modal/Choice';
@@ -14,8 +15,6 @@ import Aux                  from '../../hoc/Aux';
 import qs                   from 'qs';
 
 
-
-import InputMoment          from 'input-moment';
 
 
 class Plant extends Component {
@@ -33,6 +32,7 @@ class Plant extends Component {
         checkError   : false,
         deleteModal  : false,
         selectedData : null,
+        calendarDate : null,
     };
       
     componentDidMount() 
@@ -50,6 +50,15 @@ class Plant extends Component {
         return axios.get('/plant/' + this.props.match.params.id + '?data=true');
     }
 
+    fetchPlantAndSet = () => {
+        return this.fetchPlant().then((response) => {
+                this.setState({
+                    plant: response.data.data || [],
+                });
+
+            });
+    }
+
     fetchLocations = () => {
         return axios.get('/location');
     }
@@ -61,51 +70,21 @@ class Plant extends Component {
     // ********
     // CALENDAR
     opencalendar = (e, id, datetime) => {
-
         e.stopPropagation();
 
         this.setState({ 
-            m            : moment(datetime),
+            calendarDate : moment(datetime),
             calendar     : true,
             selectedData : id,
          });
     }
 
-    handleCalendarChange = m => {
-        this.setState({ m });
-    };
-    
-    handleCalendarSave = () => {
-
-        const date = this.state.m.format('YYYY-MM-DD HH:mm:ss');
-
-        const data = this.state.plant.data[this.state.selectedData];
-
-        axios.put('/plantdata/' + data.id, qs.stringify( {'time': date} ) )
-        .then( response => {
-            this.setState({ calendar: false });
-
-            if (response.data.data) {
-                this.fetchPlant().then((response) => {
-                    this.setState({
-                        plant: response.data.data || [],
-                    });
-        
-                });
-            }
-        }).catch( response => {
-            // console.log(response);
-        });
-    };
-    
     
 
 
 
     
     selectRow = (e, selectedData) => {
-        console.log('selecting row');
-        console.log(selectedData);
         e.stopPropagation();
         this.setState({
             selectedData,
@@ -137,6 +116,7 @@ class Plant extends Component {
             selectedData: null,
         });
     }
+
     removeFormHandler = () => {
         this.setState({
             new:false,
@@ -145,8 +125,9 @@ class Plant extends Component {
             deleteModal: false,
         });
     }
-    removecalendarHandler = () => {
-        this.setState({calendar:false})
+    removeCalendarHandler = () => {
+        this.setState({calendar:false});
+        this.fetchPlantAndSet();
     }
 
 
@@ -154,26 +135,16 @@ class Plant extends Component {
 
     editData = (e) => {
         e.stopPropagation();
-        console.log(this.state.selectedData);
         const data = { ...this.state.plant.data[this.state.selectedData] }
-        console.log(data);
         this.setState({
             update: true,
             dataForm: data,
         });
     }
 
-    // updateData = (selected) => {
-    //     this.setState({
-    //         selectedData: selected,
-    //         new: true
-    //     });
-    // }
 
     deleteData = () => {
-
         const id = this.state.plant.data[this.state.selectedData].id;
-
         axios.delete('/plantdata/' + id)
         .then( response => {
             this.setState({deleteModal: false});
@@ -192,10 +163,6 @@ class Plant extends Component {
         e.stopPropagation();
 
         this.setState({"deleteModal" : true });
-    }
-
-    checkData = (user) => {
-        console.log(user);
     }
 
 
@@ -270,8 +237,36 @@ class Plant extends Component {
         this.setState({checkError: false});
     }
 
-
-
+    renderPlantData = () => {
+        const plantData = this.state.plant.data;
+    
+        let datapoints = plantData.map((d, i) => {
+    
+            const selectedClass = (this.state.selectedData === i) ? "plant-data-line--selected" : "";
+            return (
+                <Aux key={i}>
+                    <Plantdata 
+                        checkHandler= {this.checkHandler}
+                        temperature = {d.temperature}
+                        light_hours = {d.light_hours}
+                        selectRow   = {this.selectRow}
+                        calendar    = {this.opencalendar}
+                        humidity    = {d.humidity}
+                        health      = {d.health}
+                        height      = {d.height}
+                        check       = {d.user_check}
+                        class       = {selectedClass}
+                        time        = {d.time}
+                        lux         = {d.lux}
+                        ph          = {d.ph}
+                        i           = {i}
+                    />
+                    <Separator type="plant" />
+                </Aux>
+            )
+        } );
+        return  datapoints;
+    }
 
 
 
@@ -281,19 +276,19 @@ class Plant extends Component {
             return <Spinner />
         }
 
-        let datapoints = null;
-
-        let data = [];
-        const now  = moment();
-        const born = moment(this.state.plant.created_at);
-        const age  = now.diff(born, 'days');
-
         let choiceModal = null;
+        let deleteModal = null;
+        let datapoints  = null;
+        let calendar    = null;
+        let form        = null;
+        
+        const born = moment(this.state.plant.created_at);
+        const age  = moment().diff(born, 'days');
+
         if (this.state.checkError) {
             choiceModal = <Choice message="You cannot check this data, as you added it." ok={this.choiceDismiss} cancel={this.choiceDismiss} />
         }
 
-        let deleteModal = null;
         if (this.state.deleteModal) {
             deleteModal = <Modal  show={this.state.deleteModal} 
                                 remove={this.removeFormHandler}>
@@ -306,81 +301,35 @@ class Plant extends Component {
         }
 
 
-
-
-
         
         const locationElements = this.state.locations.map((location) => {
             return <option key={location.id} value={location.id}> {location.name}</option>
         });
 
 
-        let calendar = null;
         if (this.state.calendar) {
-
-            calendar = <Modal show="true" class_modifier="modal--date" remove={this.removecalendarHandler}>
-                {/* <button className="user-controls__button user-controls__button--remove-calendar" onClick={this.removecalendarHandler}></button> */}
-                <InputMoment
-                    moment      = {this.state.m}
-                    onChange    = {this.handleCalendarChange}
-                    onSave      = {this.handleCalendarSave}
-                    minStep     = {1} // default
-                    hourStep    = {1} // default
-                    prevMonthIcon="ion-ios-arrow-left" // default
-                    nextMonthIcon="ion-ios-arrow-right" // default
-                />
-            </Modal>
+            const plantDataId = this.state.plant.data[this.state.selectedData].id
+            calendar = 
+                <Modal show="true" class_modifier="modal--date" remove={this.removeCalendarHandler}>
+                    <Calendar calendarDate={this.state.calendarDate} plantdataId={plantDataId} unmount={this.removeCalendarHandler} />
+                </Modal>
         }
 
 
-        let form = null;
 
         if (this.state.new || this.state.update) {
-
             let data = {}
-            console.log(this.state.selectedData);
             if (this.state.selectedData != null) { // then we're updating
                 data = {...this.state.dataForm}
             }
-            console.log(data);
             form =  <Modal show="true" remove={this.removeFormHandler}>
                         <PlantdataForm {...data} click={this.submit} change={this.updateForm} />
                     </Modal>
 
         }
 
-
-
-
         if (this.state.plant.data.length > 1) {
-            data = this.state.plant.data;
-
-            datapoints = data.map((d, i) => {
-
-                const selectedClass = (this.state.selectedData === i) ? "plant-data-line--selected" : "";
-                return (
-                    <Aux key={i}>
-                        <Plantdata 
-                            checkHandler= {this.checkHandler}
-                            temperature = {d.temperature}
-                            light_hours = {d.light_hours}
-                            selectRow   = {this.selectRow}
-                            calendar    = {this.opencalendar}
-                            humidity    = {d.humidity}
-                            health      = {d.health}
-                            height      = {d.height}
-                            check       = {d.user_check}
-                            class       = {selectedClass}
-                            time        = {d.time}
-                            lux         = {d.lux}
-                            ph          = {d.ph}
-                            i           = {i}
-                        />
-                        <Separator type="plant" />
-                    </Aux>
-                )
-            } );
-
+            datapoints = this.renderPlantData();
         }
 
         return (

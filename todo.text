@@ -4,6 +4,7 @@ BUG:
 
 FEATURE:
 
+    JWT tokens
     add new data for room
 
     click location from room screen to go to location page
