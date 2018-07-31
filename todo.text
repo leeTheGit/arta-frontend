@@ -4,6 +4,8 @@ BUG:
 
 FEATURE:
 
+    JWT tokens
+
     click location from room screen to go to location page
 
     limit/offset on get
