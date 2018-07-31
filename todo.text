@@ -1,21 +1,18 @@
 BUG:
-    health not working on plantdata
 
+    allow remove new room form (deselect already selected room)
 
 FEATURE:
 
     JWT tokens
+    add new data for room
 
     click location from room screen to go to location page
 
     limit/offset on get
         add load more support in frontend
 
-    add new data for room
 
-
-    have second person checking
-        create logic for check user in api
 
 
 DONE:

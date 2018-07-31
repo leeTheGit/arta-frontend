@@ -2,23 +2,17 @@ import React, {Component}   from 'react';
 import { connect }          from 'react-redux';
 import Plantdataheader      from '../../components/Plant/Plantdataheader';
 import PlantdataForm        from '../../components/Plant/PlantdataForm';
-import PlantdataSave        from '../../components/Plant/PlantdataSave';
-import DeleteModal          from '../../components/Plant/Deletemodal';
 import Separator            from '../../components/UI/Separator/Separator';
 import Plantdata            from '../../components/Plant/Plantdata';
 import Controls             from '../../components/Controls/Controls';
 import Spinner              from '../../components/UI/Spinner/Spinner';
 import moment               from 'moment';
+import Choice               from '../../components/Modal/Choice';
 import Modal                from '../../components/UI/Modal/Modal';
 import axios                from 'axios';
 import Aux                  from '../../hoc/Aux';
 import qs                   from 'qs';
 
-
-import Plantdataform        from './Plantdataform';
-import Plantdataoptions     from '../../components/Plant/Plantdataoptions';
-// import Plantdataline        from '../../components/Plant/Plantdataline';
-// import PlantdataDate        from '../../components/Plant/PlantdataDate';
 
 
 import InputMoment          from 'input-moment';
@@ -36,6 +30,7 @@ class Plant extends Component {
         calendar     : false,
         dataForm     : {},
         locations    : [],
+        checkError   : false,
         deleteModal  : false,
         selectedData : null,
     };
@@ -109,6 +104,8 @@ class Plant extends Component {
 
     
     selectRow = (e, selectedData) => {
+        console.log('selecting row');
+        console.log(selectedData);
         e.stopPropagation();
         this.setState({
             selectedData,
@@ -157,9 +154,9 @@ class Plant extends Component {
 
     editData = (e) => {
         e.stopPropagation();
-
+        console.log(this.state.selectedData);
         const data = { ...this.state.plant.data[this.state.selectedData] }
-
+        console.log(data);
         this.setState({
             update: true,
             dataForm: data,
@@ -176,9 +173,6 @@ class Plant extends Component {
     deleteData = () => {
 
         const id = this.state.plant.data[this.state.selectedData].id;
-
-
-        console.log(id);
 
         axios.delete('/plantdata/' + id)
         .then( response => {
@@ -208,13 +202,19 @@ class Plant extends Component {
     checkHandler = (dataIndex) => {
         const id = this.state.plant.data[dataIndex].id;
         const userid = this.props.authUser.id;
-        
-        console.log(id, userid);
         axios.put('/plantdata/' + id, qs.stringify( {'user_check': userid} ) )
         .then( response => {
-            console.log(response);
-            if (response.data.data) {
+
+            if (response.data.data === false) {
+                return this.setState({'checkError': true});
             }
+            this.fetchPlant()
+                .then( (response) => {
+                    this.setState({
+                        plant: response.data.data || [],
+                    });
+                });
+
         }).catch( response => {
             // console.log(response);
         });
@@ -243,6 +243,7 @@ class Plant extends Component {
 
             const data = {...this.state.dataForm};
             data.plant_id = this.state.plant.id;
+            data.user_id = this.props.authUser.id;
             submit = axios.post('/plantdata', qs.stringify(data));
         }
 
@@ -265,7 +266,9 @@ class Plant extends Component {
     }
 
 
-
+    choiceDismiss = () => {
+        this.setState({checkError: false});
+    }
 
 
 
@@ -273,7 +276,7 @@ class Plant extends Component {
 
 
     render() {
-        console.log('rendering');
+
         if (!this.state.plant.serial) {
             return <Spinner />
         }
@@ -281,16 +284,21 @@ class Plant extends Component {
         let datapoints = null;
 
         let data = [];
-        const now = moment();
+        const now  = moment();
         const born = moment(this.state.plant.created_at);
-        const age = now.diff(born, 'days');
+        const age  = now.diff(born, 'days');
 
+        let choiceModal = null;
+        if (this.state.checkError) {
+            choiceModal = <Choice message="You cannot check this data, as you added it." ok={this.choiceDismiss} cancel={this.choiceDismiss} />
+        }
 
         let deleteModal = null;
         if (this.state.deleteModal) {
             deleteModal = <Modal  show={this.state.deleteModal} 
                                 remove={this.removeFormHandler}>
-                            <DeleteModal 
+                            <Choice 
+                                message="Are you sure you want to delete this data?"
                                 ok={this.deleteData} 
                                 cancel={this.removeFormHandler}
                                 />
@@ -313,11 +321,11 @@ class Plant extends Component {
             calendar = <Modal show="true" class_modifier="modal--date" remove={this.removecalendarHandler}>
                 {/* <button className="user-controls__button user-controls__button--remove-calendar" onClick={this.removecalendarHandler}></button> */}
                 <InputMoment
-                    moment={this.state.m}
-                    onChange={this.handleCalendarChange}
-                    onSave={this.handleCalendarSave}
-                    minStep={1} // default
-                    hourStep={1} // default
+                    moment      = {this.state.m}
+                    onChange    = {this.handleCalendarChange}
+                    onSave      = {this.handleCalendarSave}
+                    minStep     = {1} // default
+                    hourStep    = {1} // default
                     prevMonthIcon="ion-ios-arrow-left" // default
                     nextMonthIcon="ion-ios-arrow-right" // default
                 />
@@ -330,21 +338,13 @@ class Plant extends Component {
         if (this.state.new || this.state.update) {
 
             let data = {}
-            if (this.state.selectedData) { // then we're updating
+            console.log(this.state.selectedData);
+            if (this.state.selectedData != null) { // then we're updating
                 data = {...this.state.dataForm}
             }
-
+            console.log(data);
             form =  <Modal show="true" remove={this.removeFormHandler}>
-                        <div className="single-plant__grid" style={{overflow:'hidden'}}>
-                            <PlantdataForm label="Temperature"  change={ this.updateForm } data={data.temperature   || ''} />
-                            <PlantdataForm label="Light hours"  change={ this.updateForm } data={data.light_hours   || ''} />
-                            <PlantdataForm label="Humidity"     change={ this.updateForm } data={data.humidity      || ''} />
-                            <PlantdataForm label="Health"       change={ this.updateForm } data={data.health        || ''} />
-                            <PlantdataForm label="Height"       change={ this.updateForm } data={data.height        || ''} />
-                            <PlantdataForm label="Lux"          change={ this.updateForm } data={data.lux           || ''} />
-                            <PlantdataForm label="PH"           change={ this.updateForm } data={data.ph            || ''} />
-                            <PlantdataSave label="Save"         click={this.submit}        customClass="save" />
-                        </div>
+                        <PlantdataForm {...data} click={this.submit} change={this.updateForm} />
                     </Modal>
 
         }
@@ -356,8 +356,8 @@ class Plant extends Component {
             data = this.state.plant.data;
 
             datapoints = data.map((d, i) => {
-                console.log(d);
-                const selectedClass = (this.state.selectedData === i+1) ? "plant-data-line--selected" : "";
+
+                const selectedClass = (this.state.selectedData === i) ? "plant-data-line--selected" : "";
                 return (
                     <Aux key={i}>
                         <Plantdata 
@@ -386,7 +386,7 @@ class Plant extends Component {
         return (
             <div className="container single-plant">
 
-
+                {choiceModal}
                 {deleteModal}
                 {calendar}
 
@@ -402,7 +402,7 @@ class Plant extends Component {
                     editItem = {this.editData}
                     cancel   = {this.showDeleteModal} 
                     adButton = {this.state.new}
-                    update   = {this.state.selectedData || '' }
+                    update   = {this.state.selectedData != null || '' }
                     click    = {this.removeFormHandler}
                 />
                 

@@ -32,7 +32,7 @@ class Layout extends Component {
 
 
     render () {
-        console.log(this.props.authUser);
+
         const username = this.props.authUser ? this.props.authUser.firstname : '';
         return (
             <Aux>

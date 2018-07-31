@@ -14,9 +14,9 @@ class Login extends Component {
         loginError: false
     }
 
-    componentDidMount() {
-        console.log(this.props);
-    }
+    // componentDidMount() {
+    //     console.log(this.props);
+    // }
 
     render() {
         if (this.props.isLoggedIn) {

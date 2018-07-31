@@ -20,8 +20,8 @@ const controls = (props) => {
     const cancelFunc = props.cancel;
 
     return (
-        <div className="user-controls" onClick={(e) => props.click(e)}>
-            <Button btnType={addClass} clicked={props.newItem}></Button>
+        <div className="user-controls" onClick={e => props.click(e)}>
+            <Button btnType={addClass} clicked={e => props.newItem(e)}></Button>
             <Button btnType={updateClass} clicked={props.editItem}></Button>
             <Button btnType={xClass} clicked={cancelFunc}></Button>
             <div className="u-clear-both"></div>

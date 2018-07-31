@@ -1,29 +1,22 @@
 import React from 'react';
+import PlantdataFormItem    from './PlantdataFormItem';
+import PlantdataSave        from './PlantdataSave';
 
-const plantdataForm = (props) => {
+const plantdataform = (props) => {
     console.log(props);
-    let rootClasses = ["single-plant__data"];
-    rootClasses.push("single-plant__data-" + props.customClass);
-
-    let h3Class = ["single-plant__data-label"];
-    h3Class.push("single-plant__data-label-" + props.customClass);
-
-    let pClass = ["single-plant__data-point"];
-    pClass.push("single-plant__data-point-" + props.customClass);
-
-    const stateKey = props.label.toLowerCase();
     return (
-        <div className={rootClasses.join(" ")}>
-            <h3 className={h3Class.join(" ")}>{props.label}</h3>
-            <input type="text" className={pClass.join(" ")} value={props.data} onChange={ e => {
-                const data = {};
-                data[stateKey] = e.target.value;
-                props.change( data )
-                }}></input>
+        <div className="single-plant__grid" style={{overflow:'hidden'}}>
+            <PlantdataFormItem label="Temperature"  change={ props.change } data={props.temperature   || ''} />
+            <PlantdataFormItem label="Light hours"  change={ props.change } data={props.light_hours   || ''} />
+            <PlantdataFormItem label="Humidity"     change={ props.change } data={props.humidity      || ''} />
+            <PlantdataFormItem label="Health"       change={ props.change } data={props.health        || ''} />
+            <PlantdataFormItem label="Height"       change={ props.change } data={props.height        || ''} />
+            <PlantdataFormItem label="Lux"          change={ props.change } data={props.lux           || ''} />
+            <PlantdataFormItem label="PH"           change={ props.change } data={props.ph            || ''} />
+            <PlantdataSave     label="Save"         click ={ props.click}   customClass="save" />
         </div>
-    );
 
+    )
 }
 
-
-export default plantdataForm;
+export default plantdataform;

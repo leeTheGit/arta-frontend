@@ -208,13 +208,6 @@ class Rooms extends Component {
 
 
     render() {
-        if (!this.state.rooms) {
-            return (
-                <Aux>
-                    <p>There are no rooms!!</p>
-                </Aux>
-            )
-        }
 
         
         let messageModal = null;
@@ -290,42 +283,45 @@ class Rooms extends Component {
 
 
 
-        const rooms = this.state.rooms.map((room,index) => {
-            const selectedClass = (this.state.selectedRoom === index) ? "room--selected" : "";
+        let rooms = null;
+        if (this.state.rooms) {
 
-            return (
-                <Aux key={room.id}>
-                    {room.status != 'new' 
-                    
-                    ?  <Room 
+            rooms = this.state.rooms.map((room,index) => {
+                const selectedClass = (this.state.selectedRoom === index) ? "room--selected" : "";
+
+                return (
+                    <Aux key={room.id}>
+                        {room.status != 'new' 
+                        
+                        ?  <Room 
+                                id              = {room.id}
+                                name            = {room.name}
+                                index           = {index}
+                                class           = {selectedClass}
+                                select          = {this.selectRoom}
+                                humidity        = {room.humidity}
+                                temperature     = {room.temperature}
+                                showRoomData    = {this.showRoomData}
+                                showLocations   = {this.showLocations}
+                            />
+
+                        : <Newroom 
                             id              = {room.id}
                             name            = {room.name}
                             index           = {index}
-                            class           = {selectedClass}
-                            select          = {this.selectRoom}
-                            humidity        = {room.humidity}
-                            temperature     = {room.temperature}
-                            showRoomData    = {this.showRoomData}
-                            showLocations   = {this.showLocations}
-                        />
-
-                    : <Newroom 
-                        id              = {room.id}
-                        name            = {room.name}
-                        index           = {index}
-                        showDeleteModal = {this.showDeleteModal}
-                        fetch           = {this.fetchRooms}
-                        />
-                    }
+                            showDeleteModal = {this.showDeleteModal}
+                            fetch           = {this.fetchRooms}
+                            />
+                        }
 
 
 
-                    { this.state.roomLocations && index === this.state.selectedRoom ? <ul className="room-locations">{roomLocations}</ul> : '' }
-                    { this.state.roomData && index === this.state.selectedRoom ? <ul className="room-data">{roomData}</ul> : '' }
-                </Aux>
-            )
-        });
-
+                        { this.state.roomLocations && index === this.state.selectedRoom ? <ul className="room-locations">{roomLocations}</ul> : '' }
+                        { this.state.roomData && index === this.state.selectedRoom ? <ul className="room-data">{roomData}</ul> : '' }
+                    </Aux>
+                )
+            });
+        }
 
         return (
             <div>
@@ -343,7 +339,7 @@ class Rooms extends Component {
                 <div className="u-margin-top-60">
                     {newRoom}
                     <ul>
-                        {rooms}
+                        {this.state.rooms && rooms}
                     </ul>
                 </div>
             </div>

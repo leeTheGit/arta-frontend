@@ -10,7 +10,7 @@ const plantdata = (props) => {
     const check = (props.check) ? "checked" : "check";
 
     return (
-        <ul key={props.i} className={"plant-data-line " + props.class} onClick={(e) => props.selectRow(e, props.i+1)} style={{overflow:'hidden'}}>
+        <ul key={props.i} className={"plant-data-line " + props.class} onClick={(e) => props.selectRow(e, props.i)} style={{overflow:'hidden'}}>
             <PlantdataDate customClass="" date={date} month={month} day={day} click={(e) => props.calendar(e, props.i+1, props.time)}/>
             <Plantdataline customClass="" data={props.temperature} />
             <Plantdataline customClass="" data={props.health} />
@@ -19,7 +19,7 @@ const plantdata = (props) => {
             <Plantdataline customClass="" data={props.height} />
             <Plantdataline customClass="" data={props.lux} />
             <Plantdataline customClass="" data={props.ph} click={() => console.log('clicked')}/>
-            <Plantdataline customClass={check} data={check} click={() => props.checkHandler(props.i+1)} />
+            <Plantdataline customClass={check} click={() => props.checkHandler(props.i)} />
             {/* <Plantdataoptions customClass="" updateData={() => this.updateData(i+1)} deleteData={() => this.deleteData(d.id)} /> */}
         </ul>
     );
