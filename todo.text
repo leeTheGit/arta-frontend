@@ -12,8 +12,3 @@ FEATURE:
         add load more support in frontend
 
 
-
-
-DONE:
-    ✓ add foreign key on user_id in plantdata table
-    ✓ create api test to mimick a plant having data added over time while changing locations
