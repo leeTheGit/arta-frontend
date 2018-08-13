@@ -31,7 +31,7 @@ import {
 
 const SortableList = SortableContainer(({items, clicked, rooms, roomSelect}) => {
 
-    
+    console.log(items);
     const locations = items.map((value, index) => {
     //     const defaultValue = rooms.findIndex( room => {
     //         console.log(room.value === value.room_id);
@@ -100,7 +100,6 @@ class Locations extends Component {
 
             this.setState({
                 rooms: roomResponse.data.data || [], 
-                ...query,
                 selectedRoom,
                 
             }, () => {

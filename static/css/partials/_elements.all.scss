@@ -41,8 +41,9 @@ button:focus {
 body {
 	line-height: 1;
 }
-ol, ul {
-	list-style: none;
+ol, ul, li {
+    list-style: none;
+    list-style-type: none;
 }
 blockquote, q {
 	quotes: none;
@@ -66,25 +67,19 @@ table {
 .row > * {
     min-height: 0;
 }
-html {
-    font-size:100%;
-}
+
 
 h1, h2 {
     margin:0;
     font-weight:300;
 }
-p {
-    margin:0;
-}
-li {list-style-type: none;}
+
 
 body{
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling:touch;
     color: color(dark);
-    // background: #fff;
     font-family: $font-family-sans-serif;
     background-color: color(back);
     font-family: sans-serif;
@@ -95,18 +90,4 @@ body{
 }
 iframe {
     border:none;
-}
-
-fieldset {
-    padding: 0;
-    margin: 0;
-    border: 0;
-    min-width: 0;
-
-    label {
-        display: inline-block;
-        max-width: 100%;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
 }

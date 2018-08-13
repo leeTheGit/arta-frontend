@@ -12,6 +12,8 @@ import Room                 from '../components/Room/Room.js';
 import Aux                  from '../hoc/Aux';
 import qs                   from 'qs';
 import {Link}               from 'react-router-dom';
+import LocationPlants       from '../components/Plant/LocationPlants';
+
 
 class Rooms extends Component {
 
@@ -27,6 +29,7 @@ class Rooms extends Component {
         showLocations       : false,
         roomDataCount       : 0,
         selectedLocation    : null,
+        showLocationPlants  : false,
     };
 
 
@@ -59,18 +62,7 @@ class Rooms extends Component {
                                     const locok = this.fetchRoomLocations(query.room, index).then(response => {
                                         console.log(response);
                                         this.setRoomLocationData(response, index);
-
-                                        // const locData = response.data.data;
-                                        // if (query.location) {
-                                        //     const index = locData.findIndex(x => x.id === query.location);
-                                        //     if (index > -1) {
-                                        //         this.setState({selectedLocation: index});
-                                        //     }
-                                        // }
-
                                     });
-                                    console.log('HAHAHAHAHHA');
-                                    console.log(locok);
 
                                 }
                             });
@@ -101,8 +93,6 @@ class Rooms extends Component {
             qp['offset'] = params['offset'];
         }
 
-        console.log(qp);
-        console.log(qs.stringify(qp));
         return axios.get('/roomdata/?' + qs.stringify(qp)).catch( response => {
             console.log(response);
         });
@@ -216,7 +206,7 @@ class Rooms extends Component {
 
 
     selectLocation = (selectedLocation) => {
-
+        console.log('selecting location');
         const locationId = this.state.roomLocations[selectedLocation].id;
         let selectValue = selectedLocation;
 
@@ -329,21 +319,11 @@ class Rooms extends Component {
 
 
 
-    getLocationPlants = () => {
-        const id = this.state.rooms[this.state.selectedRoom].id;
-
-        this.fetchRoomData(id, {'offset': this.state.roomDataCount}).then( response => {
-            var data = response.data.data;
-            
-            if (data) {
-                const roomData = [...this.state.roomData, ...data];
-                const roomDataCount = this.state.roomDataCount;
-                
-                this.setState({
-                    roomData: roomData,
-                    roomDataCount: roomDataCount + data.length
-                });
-            }
+    getLocationPlants = (e) => {
+        e.stopPropagation();
+        console.log('going to show plants');
+        this.setState({
+            showLocationPlants: true,
         });
     };
 
@@ -389,27 +369,41 @@ class Rooms extends Component {
         let newRoom = null;
 
 
+
+        let locationPlants = null;
+
+
+
         let roomLocations = null;
         if (this.state.roomLocations && this.state.showLocations) {
             roomLocations = this.state.roomLocations.map((location, index) => {
+                
+                if (this.state.showLocationPlants) {
+                    console.log('calling the component');
+                    locationPlants = <LocationPlants locationId={location.id}/>
+                }
+        
+                
+                
                 let itemClass = "room-location__item";
                 if (this.state.selectedLocation === index) {
                     itemClass += " location--selected";
                 }
-
                 const linkAddr = "/locations?room=" + location.room_id;
                 return (
-                    <li onClick={(e) => this.selectLocation(index)} key={location.id} className={itemClass}>
-                        <Link to={linkAddr}>
+                    <li onClick={(e) => {e.stopPropagation(); this.selectLocation(index)}} key={location.id} className={itemClass}>
+                        <Link to={linkAddr} onClick={(e)=> e.stopPropagation()}>
                             <p className="room-location__p" id={location.id}>{location.name}</p>
                         </Link>
-                        <button onClick={this.getLocationPlants}>Plants</button>
+                        <button onClick={(e) => this.getLocationPlants(e)}>Plants</button>
+
+                            {locationPlants}
                     </li>
                 )
             });
         }
 
-
+        
 
 
         let roomData = null;
