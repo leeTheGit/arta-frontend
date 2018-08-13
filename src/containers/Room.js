@@ -90,6 +90,7 @@ class Rooms extends Component {
 
 
     showLocations = (id, index) => {
+
         if (this.state.selectedRoom === index && this.state.showLocations === true ) {
             this.setState({
                 selectedRoom: null,
@@ -143,24 +144,27 @@ class Rooms extends Component {
             new: true,
             selectedRoom: 0
         });
-    }
+    };
+
+
     selectRoom = (e, selectedRoom) => {
         const roomId = this.state.rooms[selectedRoom].id;
         let selectValue = selectedRoom;
-        if (selectedRoom === this.state.selectedRoom) {
-            selectValue = null;
-        }
-        this.setState({
-            selectedRoom: selectValue,
+
+        const updateData = {
             showLocations: false,
             showData: false,
             roomDataCount: 0
-        });
+        };
+        
+        if (selectedRoom != this.state.selectedRoom) {
+            updateData['selectedRoom'] = selectValue;
+        }
+        this.setState(updateData);
         this.props.history.push({
             search: '?room=' + roomId
         })
-
-    }
+    };
 
 
     deleteRoom = () => {
@@ -175,13 +179,13 @@ class Rooms extends Component {
             }).catch( response => {
                 console.log(response);
             });
-    }
+    };
 
     removeNewRoom = () => {
         let rooms  = [...this.state.rooms];
         rooms.splice(0,1);
         this.setState({rooms, selectedRoom: null, new: null});
-    }
+    };
 
     showDeleteModal = () => {
 
@@ -195,19 +199,20 @@ class Rooms extends Component {
                 this.setState({"deleteModal" : true });
             }
         });
-    }
+    };
 
     removeModal = () => {
         this.setState({
             "deleteModal" : false,
             "messageModal" : false
          });
-    }
+    };
     removeDeleteModal = () => {
         this.setState({"deleteModal" : false });
-    }
+    };
 
     showRoomData = (id, index) => {
+
         if (this.state.selectedRoom === index && this.state.showData === true ) {
             this.setState({
                 selectedRoom: null,
@@ -230,7 +235,7 @@ class Rooms extends Component {
             }
         });
 
-    }
+    };
 
     loadMoreRoomData = () => {
         const id = this.state.rooms[this.state.selectedRoom].id;
@@ -250,7 +255,7 @@ class Rooms extends Component {
             }
         });
 
-    }
+    };
 
 
 
