@@ -16,16 +16,17 @@ import {Link}               from 'react-router-dom';
 class Rooms extends Component {
 
     state = {
-        new             : null, // show new room form
-        rooms           : null,
-        roomData        : [],
-        showData        : false,
-        deleteModal     : false,
-        messageModal    : false,
-        selectedRoom    : null,
-        roomLocations   : [],
-        showLocations   : false,
-        roomDataCount   : 0,
+        new                 : null, // show new room form
+        rooms               : null,
+        roomData            : [],
+        showData            : false,
+        deleteModal         : false,
+        messageModal        : false,
+        selectedRoom        : null,
+        roomLocations       : [],
+        showLocations       : false,
+        roomDataCount       : 0,
+        selectedLocation    : null,
     };
 
 
@@ -38,20 +39,39 @@ class Rooms extends Component {
         axios.get('/room/')
         .then( response => {
             var data = response.data.data;
+            
+            const query = qs.parse(this.props.location.search, {
+                ignoreQueryPrefix: true
+            });
+
             if (data) {
                 this.setState({rooms: data}, () => {
 
-                    const query = qs.parse(this.props.location.search, {
-                        ignoreQueryPrefix: true
-                    });
                     if (query.room) {
 
-                        const index = response.data.data.findIndex(x => x.id === query.room);
+                        const index = data.findIndex(x => x.id === query.room);
                         if (index > -1) {
                            
                             this.setState({selectedRoom: index}, () => {
+                                
                                 if (query.locations && query.locations == 'true') {
-                                    this.showLocations(query.room, index);
+                                    
+                                    const locok = this.fetchRoomLocations(query.room, index).then(response => {
+                                        console.log(response);
+                                        this.setRoomLocationData(response, index);
+
+                                        // const locData = response.data.data;
+                                        // if (query.location) {
+                                        //     const index = locData.findIndex(x => x.id === query.location);
+                                        //     if (index > -1) {
+                                        //         this.setState({selectedLocation: index});
+                                        //     }
+                                        // }
+
+                                    });
+                                    console.log('HAHAHAHAHHA');
+                                    console.log(locok);
+
                                 }
                             });
                         }
@@ -90,38 +110,54 @@ class Rooms extends Component {
 
 
     showLocations = (id, index) => {
+        console.log('showing locations', index, this.state.selectedRoom, this.state.showLocations);
 
         if (this.state.selectedRoom === index && this.state.showLocations === true ) {
+            console.log('IN HERERERE');
             this.setState({
                 selectedRoom: null,
                 showLocations: false,
             });
             return;
         }
-        this.fetchRoomLocations(id, index).then( response => {
-            var data = response.data.data;
-            if (data) {
-                this.setState({
-                    roomLocations: data,
-                    selectedRoom: index,
-                    showLocations: true,
-                    showData: false
-                });
 
-                const query = qs.parse(this.props.location.search, {
-                    ignoreQueryPrefix: true
-                });
 
-                if (!query.locations) {
-                    query.locations = true;
-                }
-                this.props.history.push({
-                    search: qs.stringify(query)
-                });
-        
-            }
+        return this.fetchRoomLocations(id, index).then( response => {
+            console.log(response);
+            this.setRoomLocationData(response, index);
         });
     }
+
+    setRoomLocationData = (response, index) => {
+        const query = qs.parse(this.props.location.search, {
+            ignoreQueryPrefix: true
+        });
+
+        var data = response.data.data;
+        const locIndex = data.findIndex(x => x.id === query.location);
+        if (locIndex > -1) {
+            this.setState({selectedLocation: locIndex});
+        }
+
+        if (data) {
+            this.setState({
+                roomLocations: data,
+                selectedRoom: index,
+                showLocations: true,
+                selectedLocation: locIndex,
+                showData: false
+            });
+    
+                if (!query.locations) {
+                query.locations = true;
+            }
+            this.props.history.push({
+                search: qs.stringify(query)
+            });
+        }
+    }
+
+
 
     getId(max) {
         return Math.floor(Math.random() * Math.floor(max));
@@ -148,23 +184,59 @@ class Rooms extends Component {
 
 
     selectRoom = (e, selectedRoom) => {
+
+        const query = qs.parse(this.props.location.search, {
+            ignoreQueryPrefix: true
+        });
+
         const roomId = this.state.rooms[selectedRoom].id;
         let selectValue = selectedRoom;
 
         const updateData = {
             showLocations: false,
             showData: false,
-            roomDataCount: 0
+            roomDataCount: 0,
+            selectedLocation: null,
         };
         
         if (selectedRoom != this.state.selectedRoom) {
             updateData['selectedRoom'] = selectValue;
         }
         this.setState(updateData);
+
+        delete query.room;
+        delete query.locations;
+        delete query.location;
+        query.room = roomId;
+
         this.props.history.push({
-            search: '?room=' + roomId
-        })
+            search: '?' + qs.stringify(query)
+        });
     };
+
+
+    selectLocation = (selectedLocation) => {
+
+        const locationId = this.state.roomLocations[selectedLocation].id;
+        let selectValue = selectedLocation;
+
+        const updateData = {};
+        
+        if (selectedLocation != this.state.selectedLocation) {
+            updateData['selectedLocation'] = selectValue;
+        }
+        this.setState(updateData);
+        
+        const query = qs.parse(this.props.location.search, {
+            ignoreQueryPrefix: true
+        });
+        query.location = locationId;
+
+        this.props.history.push({
+            search: '?' + qs.stringify(query)
+        });
+    };
+
 
 
     deleteRoom = () => {
@@ -239,7 +311,6 @@ class Rooms extends Component {
 
     loadMoreRoomData = () => {
         const id = this.state.rooms[this.state.selectedRoom].id;
-        const roomData = [...this.state.roomData];
 
         this.fetchRoomData(id, {'offset': this.state.roomDataCount}).then( response => {
             var data = response.data.data;
@@ -254,9 +325,27 @@ class Rooms extends Component {
                 });
             }
         });
-
     };
 
+
+
+    getLocationPlants = () => {
+        const id = this.state.rooms[this.state.selectedRoom].id;
+
+        this.fetchRoomData(id, {'offset': this.state.roomDataCount}).then( response => {
+            var data = response.data.data;
+            
+            if (data) {
+                const roomData = [...this.state.roomData, ...data];
+                const roomDataCount = this.state.roomDataCount;
+                
+                this.setState({
+                    roomData: roomData,
+                    roomDataCount: roomDataCount + data.length
+                });
+            }
+        });
+    };
 
 
 
@@ -303,14 +392,19 @@ class Rooms extends Component {
         let roomLocations = null;
         if (this.state.roomLocations && this.state.showLocations) {
             roomLocations = this.state.roomLocations.map((location, index) => {
-                console.log(location);
+                let itemClass = "room-location__item";
+                if (this.state.selectedLocation === index) {
+                    itemClass += " location--selected";
+                }
+
                 const linkAddr = "/locations?room=" + location.room_id;
                 return (
-                    <Link to={linkAddr}>
-                        <li key={location.id} className="room-location__item">
+                    <li onClick={(e) => this.selectLocation(index)} key={location.id} className={itemClass}>
+                        <Link to={linkAddr}>
                             <p className="room-location__p" id={location.id}>{location.name}</p>
-                        </li>
-                    </Link>
+                        </Link>
+                        <button onClick={this.getLocationPlants}>Plants</button>
+                    </li>
                 )
             });
         }
