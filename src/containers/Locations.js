@@ -274,6 +274,8 @@ class Locations extends Component {
             <div>
                 {/* <UserControls newItem={this.newLocation}/> */}
                 <RoomNav rooms={this.state.rooms} select={(e, index) => this.selectRoomLocations(e, index)} selected={this.state.selectedRoom} />
+                
+                <div onClick={this.props.history.goBack}>Back</div>
                 <div className="u-margin-top-60">
                     {newLocation}
                     {locations}

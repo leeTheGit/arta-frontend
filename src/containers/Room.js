@@ -25,11 +25,13 @@ class Rooms extends Component {
         selectedRoom    : null,
         roomLocations   : [],
         showLocations   : false,
+        roomDataCount   : 0,
     };
 
 
     componentDidMount() {
         this.fetchRooms();
+        console.log(this.props.history);
     }
 
     fetchRooms = () => {
@@ -37,7 +39,24 @@ class Rooms extends Component {
         .then( response => {
             var data = response.data.data;
             if (data) {
-                this.setState({rooms: data});
+                this.setState({rooms: data}, () => {
+
+                    const query = qs.parse(this.props.location.search, {
+                        ignoreQueryPrefix: true
+                    });
+                    if (query.room) {
+
+                        const index = response.data.data.findIndex(x => x.id === query.room);
+                        if (index > -1) {
+                           
+                            this.setState({selectedRoom: index}, () => {
+                                if (query.locations && query.locations == 'true') {
+                                    this.showLocations(query.room, index);
+                                }
+                            });
+                        }
+                    }
+                });
             }
         }).catch( response => {
             // console.log(response);
@@ -49,8 +68,22 @@ class Rooms extends Component {
             console.log(response);
         });
     }
-    fetchRoomData = (id, index) => {
-        return axios.get('/roomdata/?room='+id).catch( response => {
+    fetchRoomData = (id, params) => {
+        console.log(id);
+        let qp = qs.parse("?room="+id, {
+            ignoreQueryPrefix: true
+        });
+
+        if (params && params['limit']) {
+            qp['limit'] = params['limit'];
+        }
+        if (params && params['offset']) {
+            qp['offset'] = params['offset'];
+        }
+
+        console.log(qp);
+        console.log(qs.stringify(qp));
+        return axios.get('/roomdata/?' + qs.stringify(qp)).catch( response => {
             console.log(response);
         });
     }
@@ -73,6 +106,18 @@ class Rooms extends Component {
                     showLocations: true,
                     showData: false
                 });
+
+                const query = qs.parse(this.props.location.search, {
+                    ignoreQueryPrefix: true
+                });
+
+                if (!query.locations) {
+                    query.locations = true;
+                }
+                this.props.history.push({
+                    search: qs.stringify(query)
+                });
+        
             }
         });
     }
@@ -100,7 +145,7 @@ class Rooms extends Component {
         });
     }
     selectRoom = (e, selectedRoom) => {
-
+        const roomId = this.state.rooms[selectedRoom].id;
         let selectValue = selectedRoom;
         if (selectedRoom === this.state.selectedRoom) {
             selectValue = null;
@@ -108,8 +153,13 @@ class Rooms extends Component {
         this.setState({
             selectedRoom: selectValue,
             showLocations: false,
-            showData: false
+            showData: false,
+            roomDataCount: 0
         });
+        this.props.history.push({
+            search: '?room=' + roomId
+        })
+
     }
 
 
@@ -165,21 +215,42 @@ class Rooms extends Component {
             });
             return;
         }
-        this.fetchRoomData(id, index).then( response => {
+        this.fetchRoomData(id).then( response => {
             var data = response.data.data;
             if (data) {
+                const roomDataCount = this.state.roomDataCount;
+                
                 this.setState({
                     roomData: data,
                     selectedRoom: index,
                     showData: true,
-                    showLocations: false
+                    showLocations: false,
+                    roomDataCount: roomDataCount + data.length
                 });
             }
         });
 
     }
 
+    loadMoreRoomData = () => {
+        const id = this.state.rooms[this.state.selectedRoom].id;
+        const roomData = [...this.state.roomData];
 
+        this.fetchRoomData(id, {'offset': this.state.roomDataCount}).then( response => {
+            var data = response.data.data;
+            
+            if (data) {
+                const roomData = [...this.state.roomData, ...data];
+                const roomDataCount = this.state.roomDataCount;
+                
+                this.setState({
+                    roomData: roomData,
+                    roomDataCount: roomDataCount + data.length
+                });
+            }
+        });
+
+    }
 
 
 
@@ -244,6 +315,7 @@ class Rooms extends Component {
 
         let roomData = null;
         if (this.state.roomData && this.state.showData) {
+
             roomData = this.state.roomData.map((data, index) => {
                 const date = moment(data.time).format('Do MMM');
 
@@ -253,6 +325,9 @@ class Rooms extends Component {
                                  temperature    = {data.temperature} 
                                  humidity       = {data.humidity} />
             });
+
+            roomData = <Aux><ul className="room-data">{roomData}</ul><div onClick={this.loadMoreRoomData}>MORE</div></Aux>;
+
         }
 
 
@@ -291,7 +366,7 @@ class Rooms extends Component {
 
 
                         { this.state.roomLocations && index === this.state.selectedRoom ? <ul className="room-location">{roomLocations}</ul> : '' }
-                        { this.state.roomData && index === this.state.selectedRoom ? <ul className="room-data">{roomData}</ul> : '' }
+                        { this.state.roomData && index === this.state.selectedRoom ? roomData : null }
                     </Aux>
                 )
             });

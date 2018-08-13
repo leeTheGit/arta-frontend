@@ -1,8 +1,7 @@
 import React, {Component}   from 'react';
-import moment               from 'moment';
+import InputMoment          from 'input-moment';
 import axios                from 'axios';
 import qs                   from 'qs';
-import InputMoment          from 'input-moment';
 
 
 class Calendar extends Component {
