@@ -2,7 +2,7 @@ BUG:
 
 
 FEATURE:
-
+    Delete room with fetchRooms moved to roomlocation component
     Room/location page - click on location should show plants
 
     JWT tokens

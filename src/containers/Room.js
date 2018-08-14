@@ -119,7 +119,10 @@ class Rooms extends Component {
 
         if (selectedRoom != this.state.selectedRoom) {
             this.setState({'selectedRoom': selectedRoom});
-        }
+        } 
+        // else {
+        //     this.setState({'selectedRoom': null});
+        // }
 
         const query = qs.parse(this.props.location.search, {
             ignoreQueryPrefix: true
