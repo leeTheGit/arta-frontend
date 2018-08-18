@@ -1,9 +1,11 @@
 BUG:
 
+    API - update plant location to plant, have roomlocation automatically sync
 
 FEATURE:
-    Delete room with fetchRooms moved to roomlocation component
-    Room/location page - click on location should show plants
+
+    make location sort work on room page / remove location page
+    delete locations
 
     JWT tokens
     add new data for room

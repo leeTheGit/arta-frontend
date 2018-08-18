@@ -103,7 +103,6 @@ class Plant extends Component {
         }).catch( response => {
             // console.log(response);
         });
-
     }
 
 
@@ -334,6 +333,7 @@ class Plant extends Component {
 
         return (
             <div className="container single-plant">
+                <div onClick={this.props.history.goBack}>Back</div>
 
                 {choiceModal}
                 {deleteModal}

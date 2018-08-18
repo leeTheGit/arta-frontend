@@ -28,13 +28,15 @@ class Rooms extends Component {
         showLocationPlants  : false,
     };
 
+    fetch = url => {return axios.get(url)};
 
     componentDidMount() {
         this.fetchRooms();
     }
 
+
     fetchRooms = () => {
-        axios.get('/room/')
+        this.fetch('/room/')
         .then( response => {
             var data = response.data.data;
             
@@ -148,7 +150,7 @@ class Rooms extends Component {
         axios.delete('/room/' + roomid)
             .then( response => {
                 this.setState({new: null});
-                this.setState({"deleteModal" : false });
+                this.setState({"deleteModal" : false, selectedRoom: null });
                 this.fetchRooms();            
             }).catch( response => {
                 console.log(response);
@@ -164,8 +166,8 @@ class Rooms extends Component {
     showDeleteModal = () => {
 
         const room = this.state.rooms[this.state.selectedRoom];
-
-        this.fetchRoomLocations(room.id).then((response) => {
+        
+        this.fetch('/location/?room='+room.id).then(response => {
 
             if (response.data.data.length > 0) {
                 this.setState({"messageModal" : true });
@@ -187,6 +189,24 @@ class Rooms extends Component {
 
 
 
+
+    renderRoomLocations = (index) => {
+        if (this.state.showLocations && index === this.state.selectedRoom) {
+            const roomid = this.state.rooms[this.state.selectedRoom].id;
+            return <RoomLocations room={roomid} />
+        }
+
+        return null;
+    }
+
+    renderRoomData = (index) => {
+        
+        if (this.state.showData && index === this.state.selectedRoom ) {
+            const roomid = this.state.rooms[this.state.selectedRoom].id;
+            return <RoomData room={roomid} />
+        }
+        return null;
+    }
     
 
 
@@ -228,24 +248,6 @@ class Rooms extends Component {
 
 
         let newRoom = null;
-
-        let roomLocations = null;
-        if (this.state.showLocations) {
-            const roomid = this.state.rooms[this.state.selectedRoom].id;
-            roomLocations = <RoomLocations room={roomid} />
-        }
-
-    
-
-        let roomData = null;
-        if (this.state.showData) {
-            const roomid = this.state.rooms[this.state.selectedRoom].id;
-            console.log(roomid);
-            roomData = <RoomData room={roomid} />
-        }
-
-
-
         let rooms = null;
         if (this.state.rooms) {
 
@@ -279,8 +281,8 @@ class Rooms extends Component {
 
 
 
-                        { this.state.showLocations && index === this.state.selectedRoom ? roomLocations : '' }
-                        { this.state.showData && index === this.state.selectedRoom ? roomData : null }
+                        {this.renderRoomLocations(index)}
+                        {this.renderRoomData(index)}
                     </Aux>
                 )
             });

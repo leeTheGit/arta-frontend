@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import {Link}               from 'react-router-dom';
 import axios                from 'axios';
-import qs                   from 'qs';
 import Aux                  from '../../hoc/Aux';
+import qs                   from 'qs';
 
 class LocationPlants extends Component {
 
@@ -18,7 +19,7 @@ class LocationPlants extends Component {
     fetchLocationPlants = (id) => {
         return axios.get('/plant/?location=' + id).then( response => {
             var data = response.data.data;
-            console.log(data);
+
             if (data) {
                 this.setState({
                     plants: data,
@@ -35,9 +36,9 @@ class LocationPlants extends Component {
         }
 
         const plants = this.state.plants.map((plant, i) => {
-            return <div>{i}</div>
+            return <div><Link to={'/plant/' + plant.id + '/'} onClick={(e)=> e.stopPropagation()}>{plant.serial}</Link></div>
         });
-        console.log(plants);
+
         return (
             <Aux>
                 {plants}

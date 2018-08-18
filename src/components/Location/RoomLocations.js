@@ -79,8 +79,7 @@ class RoomLocations extends Component {
     };
 
     getLocationPlants = (e) => {
-        e.stopPropagation();
-        console.log('going to show plants');
+        // e.stopPropagation();
         this.setState({
             showLocationPlants: true,
         });
@@ -91,16 +90,8 @@ class RoomLocations extends Component {
 
     render() {
 
-        let locationPlants = null;
-
         const roomLocations = this.state.locations.map((location, index) => {
 
-            if (this.state.showLocationPlants) {
-                locationPlants = <LocationPlants locationId={location.id}/>
-            }
-    
-            console.log(location.name);
-            
             let itemClass = "room-location__item";
             if (this.state.selectedLocation === index) {
                 itemClass += " location--selected";
@@ -113,7 +104,7 @@ class RoomLocations extends Component {
                     </Link>
                     <button onClick={(e) => this.getLocationPlants(e)}>Plants</button>
 
-                    {locationPlants}
+                    {this.state.showLocationPlants && this.state.selectedLocation === index && <LocationPlants locationId={location.id}/>}
                 </li>
             )
         });

@@ -7,8 +7,8 @@
     width: 75%;
     margin: auto;
     padding: 10px;
-    text-align: center;
-    display:flex;
+    // text-align: center;
+    // display:flex;
     border-bottom: 1px solid #262729;
     &:after {
         content: " ";
@@ -26,10 +26,11 @@
     }
 
     &.location--selected {
-        background:pink;
+        border-left: 3px solid color(brightgreen);
     }
 }
 
 .room-location__p {
+    float:left;
     color:white;
 }
